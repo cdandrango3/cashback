@@ -36,7 +36,7 @@ public function actionIndex(){
         $pro = $productos::find()->select("name")->all();
         $precio = $productos::find()->all();
 
-        $query=$person::find()->select("id")->all();
+        $query = $person::find()->select("id")->all();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->validate()) {
                 $model->save();
@@ -49,7 +49,7 @@ public function actionIndex(){
 
             }
             $c = Yii::$app->request->post('FacturaBody');
-            $per= Yii::$app->request->post('Person');
+            $per = Yii::$app->request->post('Person');
 
             $d = Yii::$app->request->post('Facturafin');
             foreach ($c as $fr) {
@@ -59,30 +59,26 @@ public function actionIndex(){
                 $model2->precio_total = $fr["precio_total"];
                 $model2->save();
             }
-            $c= rand(100, 1000);
-            $facturafin->id=$c;
-            $facturafin->subtotal=$d["subtotal"];
-            $facturafin->total=$d["total"];
-            $facturafin->iva=$d["iva"];
-            $facturafin->id_head=$model->id;
+            $c = rand(100, 1000);
+            $facturafin->id = $c;
+            $facturafin->subtotal = $d["subtotal"];
+            $facturafin->total = $d["total"];
+            $facturafin->iva = $d["iva"];
+            $facturafin->id_head = $model->id;
             $facturafin->save();
 
             $facturafin->save();
 
-            }
+        }
 
-        if ($facturafin->load(Yii::$app->request->post())) {
-            $d = Yii::$app->request->post('Facturafin');
-            if ($facturafin->validate()) {
 
-            }
 
 
             return $this->render('factura', [
                 'model' => $model, 's' => False, "ven" => $persona, "model2" => $model2, "produc" => $pro, "pro2" => $precio, 'model3' => $facturafin,'query'=>$query
             ]);
         }
-    }
+
     public function actionFormclientrender(){
     $person=new Person;
     $query=$person::find()->select("ruc")->all();

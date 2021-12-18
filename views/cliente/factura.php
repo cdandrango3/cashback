@@ -5,6 +5,7 @@ use app\models\Person;
 use yii\Bootstrap4;
 use yii\bootstrap4\Modal;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -16,7 +17,9 @@ $listData=ArrayHelper::map($ven,"name","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($pro2,"name","precio");
 $listruc=ArrayHelper::map($query,"id","");
+$prelist=\yii\helpers\Json::encode($listPrecio);
 $authItemChild = Yii::$app->request->post('Person');
+
 
 $auth = Yii::$app->request->post('HeadFact');
 $request=Yii::$app->request->post('FacturaBody');
@@ -26,56 +29,55 @@ $request=Yii::$app->request->post('FacturaBody');
 <div class="cliente-factura">
 
     <?php $form = ActiveForm::begin(); ?>
-       <div class="row">
-               <div class="col-6">
-        <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...'])->label("vendedor");?>
+    <div class="row">
+        <div class="col-6">
+            <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...'])->label("vendedor");?>
 
-        <?=$form->field($model, 'id_personas')->dropDownList($listruc,['prompt'=>'Select...'])->label("persona")?>
+            <?=$form->field($model, 'id_personas')->dropDownList($listruc,['prompt'=>'Select...'])->label("persona")?>
 
 
 
-        <?= $form->field($model, 'f_timestamp');?>
-        <?= $form->field($model, 'Entregado')->checkBox(['label' => 'entregado']);  ?>
-                   </div>
-           <div class="col-6">
-        <?= $form->field($model, 'n_documentos') ?>
-        <?= $form->field($model, 'referencia') ?>
-        <?= $form->field($model, 'orden_cv') ?>
-        <?= $form->field($model, 'autorizacion') ?>
-        <?= $form->field($model, 'tipo_de_documento') ?>
-           </div>
+            <?= $form->field($model, 'f_timestamp');?>
+            <?= $form->field($model, 'Entregado')->checkBox(['label' => 'entregado']);  ?>
+        </div>
+        <div class="col-6">
+            <?= $form->field($model, 'n_documentos') ?>
+            <?= $form->field($model, 'referencia') ?>
+            <?= $form->field($model, 'orden_cv') ?>
+            <?= $form->field($model, 'autorizacion') ?>
+            <?= $form->field($model, 'tipo_de_documento') ?>
+        </div>
         <div class="form-group">
 
         </div>
-           </div>
-       </div>
+    </div>
+</div>
+
 <table class="table table-dark">
     <thead>
-       <th>Cantidad</th>
-       <th> Producto </th>
-       <th> Valor unitario </th>
-       <th> Valor final </th>
+    <th>Cantidad</th>
+    <th> Producto </th>
+    <th> Valor unitario </th>
+    <th> Valor final </th>
     </thead>
     <tbody>
     <tr>
+
         <td>
-<?= $form->field($model2, '[0]cant')->label("")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"can",'onkey'=>"javascript:fields2()"]) ?>
-    </td>
+            <?= $form->field($model2, '[0]cant')->label("")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"can",'onkey'=>"javascript:fields2()"]) ?>
+        </td>
         <td>
             <?= $form->field($produc[0], '[0]name')->dropDownList($listProduct,['prompt'=>'Select...','onchange'=>"javascript:fields()","id"=>"valo"])->label("")?>
         </td>
-    <td>
-<?= $form->field($model2, '[0]precio_u')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"idn"])?> ?>
-    </td>
-    <td>
-<?= $form->field($model2, '[0]precio_total')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"valtotal"]) ?>
-    </td>
+        <td>
+            <?= $form->field($model2, '[0]precio_u')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"idn"])?> ?>
+        </td>
+        <td>
+            <?= $form->field($model2, '[0]precio_total')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"valtotal"]) ?>
+        </td>
     </tr>
-    <tr>
-        <td><?= $form->field($model2, '[1]cant')->label("")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"can1",'onkey'=>"javascript:fields2()"]) ?></td>
-        <td><?= $form->field($produc[0], '[1]name')->dropDownList($listProduct,['prompt'=>'Select...','onchange'=>"javascript:fields2()","id"=>"valo1"])->label("")?></td>
-        <td><?= $form->field($model2, '[1]precio_u')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"idn1"])?> ?></td>
-        <td><?= $form->field($model2, '[1]precio_total')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"valtotal1"]) ?></td>
+    <tr id="nuevo">
+
     </tr>
     </tbody>
 </table>
@@ -91,39 +93,49 @@ $request=Yii::$app->request->post('FacturaBody');
     </div>
 </div>
 <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
-    <?php ActiveForm::end(); ?>
+
 
 
 
 </div><!-- cliente-factura -->
-<?php echo HTML::tag("button", "mostrar", ["value" => "ff", "id" => "modalb", "class" => "btn btn-primary"]); ?>
+<?php ActiveForm::end(); ?>
+<?php echo HTML::tag("button", "mostrar", ["value" => "ff", "id" => "añadir", "class" => "btn btn-success float-right mr-4"]); ?>
 
 <?php
 
-    Modal::begin([
-        'title'=>'<h1 class="text-primary">Escoger Persona</h1>',
-        'id'=>'modal',
-        'size'=>'modal-lg',
+Modal::begin([
+    'title'=>'<h1 class="text-primary">Escoger Persona</h1>',
+    'id'=>'modal',
+    'size'=>'modal-lg',
 
-    ]);
+]);
 $models=New Person;
 $model=$models::find()->select("ruc")->all();
-    echo $this->renderAjax("formclientrender",compact('model'));
+echo $this->renderAjax("formclientrender",compact('model'));
 
-    Modal::end();
+Modal::end();
 print_r($authItemChild);
 print_r($auth);
 
 ?>
 
 <script type="text/javascript">
-
+    var count=0;
+$(añadir).click(function(){
+     count=count+1;
+     var c='<td>'
+       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can" class="form-control" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
+    c+='</td>'
+    $('#nuevo').append(c)
+})
     function fields()
 
     {
 
-       var h=document.getElementById('valo').value;
-       document.getElementById('idn').value=<?php echo $listPrecio["Hilook"]?>;
+        var h=document.getElementById('valo').value;
+        var f=JSON.parse('<?php echo $prelist?>');
+        var v=f[h];
+        document.getElementById('idn').value=v;
         var g= document.getElementById('can').value;
         var total =g*document.getElementById('idn').value;
         console.log(g)
@@ -143,6 +155,7 @@ print_r($auth);
         var h=document.getElementById('valo1').value;
 
         document.getElementById('idn1').value=<?php echo $listPrecio["Hilook"]?>;
+
         var g= document.getElementById('can1').value;
         var total =g*document.getElementById('idn1').value;
         console.log(g)
@@ -150,7 +163,7 @@ print_r($auth);
         var stotal=parseInt(document.getElementById('valtotal1').value) + parseInt(document.getElementById('valtotal').value);
         var iva=stotal*0.12;
         var tot=stotal+iva;
-        document.getElementById('sub').value=stotal
+        document.getElementById('sub').value=stotals
         document.getElementById('iva').value=iva
         document.getElementById('total').value=tot
     }
