@@ -107,7 +107,6 @@ function adddetail() {
     $('#costcenter' + last_id).removeAttr("data-krajee-select2");
     $('#costcenter' + last_id).removeAttr("style");
     var data = $("#tdetail tr").last().prop("outerHTML");
-    var $dat
     data = data.replace('account' + last_id+'_group', 'account' + (last_id + 1)+'_group');
     data = data.replace('row' + last_id, 'row' + (last_id + 1));
     data = data.replace('account' + last_id, 'account' + (last_id + 1));

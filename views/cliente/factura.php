@@ -5,7 +5,6 @@ use app\models\Person;
 use yii\Bootstrap4;
 use yii\bootstrap4\Modal;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -28,7 +27,12 @@ $request=Yii::$app->request->post('FacturaBody');
 
 <div class="cliente-factura">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'dynamic-form111',
+        'action' => 'save-url',
+        'enableAjaxValidation' => true,
+        'validationUrl' => 'validation-rul',
+          ]); ?>
     <div class="row">
         <div class="col-6">
             <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...'])->label("vendedor");?>
@@ -60,25 +64,9 @@ $request=Yii::$app->request->post('FacturaBody');
     <th> Valor unitario </th>
     <th> Valor final </th>
     </thead>
-    <tbody>
-    <tr>
+    <tbody id="nuevo">
 
-        <td>
-            <?= $form->field($model2, '[0]cant')->label("")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"can",'onkey'=>"javascript:fields2()"]) ?>
-        </td>
-        <td>
-            <?= $form->field($produc[0], '[0]name')->dropDownList($listProduct,['prompt'=>'Select...','onchange'=>"javascript:fields()","id"=>"valo"])->label("")?>
-        </td>
-        <td>
-            <?= $form->field($model2, '[0]precio_u')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"idn"])?> ?>
-        </td>
-        <td>
-            <?= $form->field($model2, '[0]precio_total')->label("")->textInput(['readonly' => true, 'value' =>"" ,"id"=>"valtotal"]) ?>
-        </td>
-    </tr>
-    <tr id="nuevo">
 
-    </tr>
     </tbody>
 </table>
 <div class="row">
@@ -123,50 +111,97 @@ print_r($auth);
     var count=0;
 $(añadir).click(function(){
      count=count+1;
-     var c='<td>'
-       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can" class="form-control" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
+     var c='<tr id="int'+count+'">'
+         c+='<td>'
+       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can'+count+'" class="form-control" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
+      c+='</td>'
+     c+='<td>'
+    c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select id="'+count+'" class="form-control la" name="Product['+count+'][name]"> <option value="">Select...</option><option value="Hilook" selected>Hilook</option>+<option value="Camara movil">Camara movil</option><option value="LookGlass">LookGlass</option></select></div>'
     c+='</td>'
-    $('#nuevo').append(c)
+    c+='<td>'
+    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control" name="FacturaBody['+count+'][precio_u]" value="" readonly><div class="help-block"></div> </div> '
+    c+='</td>'
+    c+='<td>'
+    c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
+    c+='<td>'
+    c+='<button class="btn btn-danger mt-3 remove" id="'+count+'">Eliminar</button>'
+    c+='</td>'
+    c+='</tr>'
+
+
+
+
+    $(document).on('click','.remove',function(){
+        id=$(this).attr("id");
+
+
+        $("#int"+id).remove();
+        $('.g').each(function(){
+            sum=sum+parseFloat($(this).val());
+
+        })
+        $('#sub').val(sum)
+        iva=sum*0.12;
+        des=0;
+        total=sum+iva+des;
+        $('#iva').val(iva)
+        $('#des').val(iva)
+        $('#total').val(total)
+        sum=0;
+    })
+
+    $('#nuevo').append(c);
 })
-    function fields()
+    $('body').on('beforeSubmit', 'form#dynamic-form111', function () {
+        var form = $(this);
+        // return false if form still have some validation errors
+        if (form.find('.has-error').length)
+        {
+            return false;
+        }
+        // submit form
+        $.ajax({
+            url    : form.attr('action'),
+            type   : 'get',
+            data   : form.serialize(),
+            success: function (response)
+            {
+                var getupdatedata = $(response).find('#filter_id_test');
+                // $.pjax.reload('#note_update_id'); for pjax update
+                $('#yiiikap').html(getupdatedata);
+                //console.log(getupdatedata);
+            },
+            error  : function ()
+            {
+                console.log('internal server error');
+            }
+        });
+        return false;
+    });
 
-    {
+    $(document).on('change','.la',function(){
+        h=$(this).attr("id");
+        d=$(this).val();
+        f=JSON.parse('<?php echo $prelist?>');
+        $('#idn'+h+'').val(f[d]);
+        re=($('#can'+h).val())*($('#idn'+h).val())
+        $('#valtotal'+h).val(re);
+        console.log(re)
+        sum=0;
+        $('.g').each(function(){
+            sum=sum+parseFloat($(this).val());
 
-        var h=document.getElementById('valo').value;
-        var f=JSON.parse('<?php echo $prelist?>');
-        var v=f[h];
-        document.getElementById('idn').value=v;
-        var g= document.getElementById('can').value;
-        var total =g*document.getElementById('idn').value;
-        console.log(g)
-        document.getElementById('valtotal').value=total;
-        var stotal=parseInt(document.getElementById('valtotal1').value) + parseInt(document.getElementById('valtotal').value);
-        var iva=stotal*0.12;
-        var tot=stotal+iva;
-        document.getElementById('sub').value=stotal
-        document.getElementById('iva').value=iva
-        document.getElementById('total').value=tot
+        })
+      $('#sub').val(sum)
+        iva=sum*0.12;
+        des=0;
+        total=sum+iva+des;
+        $('#iva').val(iva)
+        $('#des').val(iva)
+        $('#total').val(total)
+    })
+    $('#añadir')
 
-    }
-    function fields2()
-
-    {
-
-        var h=document.getElementById('valo1').value;
-
-        document.getElementById('idn1').value=<?php echo $listPrecio["Hilook"]?>;
-
-        var g= document.getElementById('can1').value;
-        var total =g*document.getElementById('idn1').value;
-        console.log(g)
-        document.getElementById('valtotal1').value=total;
-        var stotal=parseInt(document.getElementById('valtotal1').value) + parseInt(document.getElementById('valtotal').value);
-        var iva=stotal*0.12;
-        var tot=stotal+iva;
-        document.getElementById('sub').value=stotals
-        document.getElementById('iva').value=iva
-        document.getElementById('total').value=tot
-    }
 
 </script>
 

@@ -10,14 +10,15 @@ use Yii;
  * @property int $id
  * @property int|null $id_saleman
  * @property string|null $f_timestamp
- * @property string|null $n_documentos
+ * @property string $n_documentos
  * @property int|null $id_personas
  * @property string|null $referencia
- * @property string|null $orden_cv
+ * @property string $orden_cv
  * @property bool|null $Entregado
  * @property string|null $autorizacion
  * @property string|null $tipo_de_documento
  *
+ * @property Facturafin[] $facturafins
  * @property Person $personas
  * @property Salesman $saleman
  */
@@ -40,6 +41,7 @@ class HeadFact extends \yii\db\ActiveRecord
             [['id_saleman', 'id_personas'], 'default', 'value' => null],
             [['id_saleman', 'id_personas'], 'integer'],
             [['f_timestamp'], 'safe'],
+            [['n_documentos', 'orden_cv'], 'required'],
             [['Entregado'], 'boolean'],
             [['n_documentos', 'referencia', 'orden_cv', 'autorizacion', 'tipo_de_documento'], 'string', 'max' => 50],
             [['id_personas'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['id_personas' => 'id']],
@@ -54,16 +56,26 @@ class HeadFact extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'id_saleman' => 'Vendedor',
+            'id_saleman' => 'Id Saleman',
             'f_timestamp' => 'F Timestamp',
             'n_documentos' => 'N Documentos',
-            'id_personas' => 'Persona',
+            'id_personas' => 'Id Personas',
             'referencia' => 'Referencia',
-            'orden_cv' => 'Orden_Cv',
+            'orden_cv' => 'Orden Cv',
             'Entregado' => 'Entregado',
             'autorizacion' => 'Autorizacion',
-            'tipo_de_documento' => 'TipoDe Documento',
+            'tipo_de_documento' => 'Tipo De Documento',
         ];
+    }
+
+    /**
+     * Gets query for [[Facturafins]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFacturafins()
+    {
+        return $this->hasMany(Facturafin::className(), ['id_head' => 'id']);
     }
 
     /**
