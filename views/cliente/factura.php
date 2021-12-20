@@ -15,10 +15,11 @@ use yii\widgets\ActiveForm;
 $listData=ArrayHelper::map($ven,"name","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($pro2,"name","precio");
-$listruc=ArrayHelper::map($query,"id","");
+$listruc=ArrayHelper::map($query,"id","id");
 $prelist=\yii\helpers\Json::encode($listPrecio);
-$authItemChild = Yii::$app->request->post('Person');
+$prolist=\yii\helpers\Json::encode($listProduct);
 
+$authItemChild = Yii::$app->request->post('Person');
 
 $auth = Yii::$app->request->post('HeadFact');
 $request=Yii::$app->request->post('FacturaBody');
@@ -27,21 +28,15 @@ $request=Yii::$app->request->post('FacturaBody');
 
 <div class="cliente-factura">
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'dynamic-form111',
-        'action' => 'save-url',
-        'enableAjaxValidation' => true,
-        'validationUrl' => 'validation-rul',
-          ]); ?>
+    <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class="col-6">
+            <?= $form->field($model, 'f_timestamp')->label("Fecha de Emision");?>
+            <?=$form->field($ven[0],"id")->dropDownList($listruc,['prompt'=>'Select...'])->label("Persona");?>
+
+
+
             <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...'])->label("vendedor");?>
-
-            <?=$form->field($model, 'id_personas')->dropDownList($listruc,['prompt'=>'Select...'])->label("persona")?>
-
-
-
-            <?= $form->field($model, 'f_timestamp');?>
             <?= $form->field($model, 'Entregado')->checkBox(['label' => 'entregado']);  ?>
         </div>
         <div class="col-6">
@@ -56,7 +51,7 @@ $request=Yii::$app->request->post('FacturaBody');
         </div>
     </div>
 </div>
-
+<?php echo HTML::tag("a", "mostrar", ["value" => "ff", "id" => "añadir", "class" => "btn btn-success float-right mr-4"]); ?>
 <table class="table table-dark">
     <thead>
     <th>Cantidad</th>
@@ -87,8 +82,20 @@ $request=Yii::$app->request->post('FacturaBody');
 
 </div><!-- cliente-factura -->
 <?php ActiveForm::end(); ?>
-<?php echo HTML::tag("button", "mostrar", ["value" => "ff", "id" => "añadir", "class" => "btn btn-success float-right mr-4"]); ?>
 
+
+<?php
+
+Modal::begin([
+    'title'=>'<h1 class="text-primary">Escoger Persona</h1>',
+    'id'=>'modal2',
+    'size'=>'modal-lg',
+
+]);
+
+Modal::end();
+
+?>
 <?php
 
 Modal::begin([
@@ -102,21 +109,35 @@ $model=$models::find()->select("ruc")->all();
 echo $this->renderAjax("formclientrender",compact('model'));
 
 Modal::end();
-print_r($authItemChild);
-print_r($auth);
 
 ?>
 
+
+
 <script type="text/javascript">
     var count=0;
+    $(document).ready(function(){
+        $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
+    })
+    $('#buscar').click(function() {
+        $('#modal').modal('show')
+            .find('#modalContent')
+    })
+
 $(añadir).click(function(){
      count=count+1;
+  pro='<?php echo $prolist ?>'
+    dapro=JSON.parse(pro)
      var c='<tr id="int'+count+'">'
          c+='<td>'
        c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can'+count+'" class="form-control" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
       c+='</td>'
      c+='<td>'
-    c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select id="'+count+'" class="form-control la" name="Product['+count+'][name]"> <option value="">Select...</option><option value="Hilook" selected>Hilook</option>+<option value="Camara movil">Camara movil</option><option value="LookGlass">LookGlass</option></select></div>'
+    c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select id="'+count+'" class="form-control la" name="Product['+count+'][name]"> <option value="">Select...</option>'
+        for(i in dapro){
+         c+='<option value="'+i+'" selected>"'+i+'"</option>'
+        }
+    c+='</select></div>'
     c+='</td>'
     c+='<td>'
     c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control" name="FacturaBody['+count+'][precio_u]" value="" readonly><div class="help-block"></div> </div> '
@@ -128,7 +149,9 @@ $(añadir).click(function(){
     c+='</td>'
     c+='</tr>'
 
+    $('#hola').click(function(){
 
+    });
 
 
     $(document).on('click','.remove',function(){

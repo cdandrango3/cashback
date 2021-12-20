@@ -11,7 +11,7 @@ use Yii;
  * @property int|null $id_saleman
  * @property string|null $f_timestamp
  * @property string $n_documentos
- * @property int|null $id_personas
+ * @property int $id_personas
  * @property string|null $referencia
  * @property string $orden_cv
  * @property bool|null $Entregado
@@ -41,9 +41,10 @@ class HeadFact extends \yii\db\ActiveRecord
             [['id_saleman', 'id_personas'], 'default', 'value' => null],
             [['id_saleman', 'id_personas'], 'integer'],
             [['f_timestamp'], 'safe'],
-            [['n_documentos', 'orden_cv'], 'required'],
+            [['n_documentos', 'id_personas', 'orden_cv'], 'required'],
             [['Entregado'], 'boolean'],
             [['n_documentos', 'referencia', 'orden_cv', 'autorizacion', 'tipo_de_documento'], 'string', 'max' => 50],
+            [['n_documentos', 'n_documentos'], 'unique', 'targetAttribute' => ['n_documentos', 'n_documentos']],
             [['id_personas'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['id_personas' => 'id']],
             [['id_saleman'], 'exist', 'skipOnError' => true, 'targetClass' => Salesman::className(), 'targetAttribute' => ['id_saleman' => 'id']],
         ];
