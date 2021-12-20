@@ -108,10 +108,10 @@ class AccountingseatsController extends Controller
      * Lists all AccountingSeats models.
      * @return mixed
      */
-    public function actionIndex($account = null)
+    public function actionIndex($account = 2)
     {
         $searchModel = new AccountingSeatsSearch();
-        $searchModel->account = $account;
+        $searchModel->account = 2;
         $searchModel->institution_id = 1;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
