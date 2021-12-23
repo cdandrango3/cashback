@@ -8,13 +8,18 @@ use Yii;
  * This is the model class for table "product".
  *
  * @property int $id
- * @property string $productname
+ * @property string $name
  * @property bool $status
- * @property string $created_at
- * @property string $updated_at
- * @property string|null $deleted_at
+ * @property int $institution_id
+ * @property string|null $category
+ * @property int $product_type_id
+ * @property string|null $brand
+ * @property string|null $purpose
+ * @property int $product_iva_id
+ * @property float|null $precio
+ * @property float|null $costo
  *
- * @property ProductInstitution[] $productInstitutions
+ * @property FacturaBody[] $facturaBodies
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -32,10 +37,13 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['productname'], 'required'],
+            [['name', 'institution_id', 'product_type_id', 'product_iva_id'], 'required'],
             [['status'], 'boolean'],
-            [['created_at', 'updated_at', 'deleted_at'], 'safe'],
-            [['productname'], 'string', 'max' => 150],
+            [['institution_id', 'product_type_id', 'product_iva_id'], 'default', 'value' => null],
+            [['institution_id', 'product_type_id', 'product_iva_id'], 'integer'],
+            [['precio', 'costo'], 'number'],
+            [['name', 'brand', 'purpose'], 'string', 'max' => 250],
+            [['category'], 'string', 'max' => 258],
         ];
     }
 
@@ -46,21 +54,26 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'productname' => 'Productname',
+            'name' => 'Nombre',
             'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'deleted_at' => 'Deleted At',
+            'institution_id' => 'Institucion',
+            'category' => 'Categorias',
+            'product_type_id' => 'Tipo de producto',
+            'brand' => 'Marca',
+            'purpose' => 'Proposito',
+            'product_iva_id' => 'Producto Iva',
+            'precio' => 'Precio',
+            'costo' => 'Costo',
         ];
     }
 
     /**
-     * Gets query for [[ProductInstitutions]].
+     * Gets query for [[FacturaBodies]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProductInstitutions()
+    public function getFacturaBodies()
     {
-        return $this->hasMany(ProductInstitution::className(), ['product_id' => 'id']);
+        return $this->hasMany(FacturaBody::className(), ['id_producto' => 'id']);
     }
 }

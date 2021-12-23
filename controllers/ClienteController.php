@@ -10,6 +10,7 @@ use app\models\Institution;
 use app\models\Person;
 use app\models\HeadFact;
 use app\models\Product;
+use app\models\ProductType;
 use app\models\Salesman;
 use Cassandra\Date;
 use Yii;
@@ -34,6 +35,7 @@ public function actionIndex(){
         $person = new Person;
         $client=New Clients;
         $institucion=New Institution;
+        $model_tip=New ProductType;
         $salesman = new Salesman;
         $model2 = new FacturaBody;
         $productos = new Product;
@@ -41,8 +43,13 @@ public function actionIndex(){
         $accounting_seats=new AccountingSeats;
         $accounting_seats_details=New AccountingSeatsDetails;
         $persona = $person::find()->select("name")->all();
-        $pro = $productos::find()->select("name")->all();
+        $model_tipo=$model_tip::find()->select("name")->all();
+        $pro = $productos::find()->select("name")->where(['product_type_id'=>1])->all();
+
         $precio = $productos::find()->all();
+        $proser = $productos::find()->select("name")->where(['product_type_id'=>2])->all();
+
+        $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
         $query = $person::find()->select("id")->all();
@@ -52,7 +59,7 @@ public function actionIndex(){
                 $model->id_personas=$per["id"];
                 $model->save();
 
-                $c = rand(100, 1000);
+                $c = rand(1, 100090000);
                 $facturafin->id = $c;
                 $facturafin->subtotal = $d["subtotal"];
                 $facturafin->total = $d["total"];
@@ -63,14 +70,14 @@ public function actionIndex(){
                 if($model->save()){
                 $ch1=$client::findOne(['person_id' => $model->id_personas]);
                 $accou_c=$ch1->chart_account_id;
-                    Yii::debug($accou_c);
+
                 $ins=$person::findOne(['id' => $model->id_personas]);
                 $id_ins=$ins->institution_id;
-                    Yii::debug($id_ins);
+
                 $descripcion="fact1";
                 $nodeductible=True;
                 $status=True;
-                    $h = rand(100, 1000);
+                    $h = rand(1, 10000000);
                  $accounting_seats->id= $h;
                 $accounting_seats->institution_id=$id_ins;
                 $accounting_seats->description=$descripcion;
@@ -78,27 +85,80 @@ public function actionIndex(){
                 $accounting_seats->status=$status;
                 if($accounting_seats->save()){
                     $debea=$accou_c;
-                    $habera=[13272,14129];
-                    $value=[$habera[0]=>$facturafin->iva,$habera[1]=>$facturafin->subtotal];
-                    $accounting_seats_details=New AccountingSeatsDetails;
-                    $accounting_seats_details->accounting_seat_id=$accounting_seats->id;
-                    $accounting_seats_details->chart_account_id=$debea;
-                    $accounting_seats_details->debit=$facturafin->total;
-                    $accounting_seats_details->credit=0;
-                    $accounting_seats_details->cost_center_id=1;
-                    $accounting_seats_details->status=true;
-                    $accounting_seats_details->save();
 
-                    foreach($habera as $haber){
+
+                    if ($model_tip->load(Yii::$app->request->post())){
+                        $fr=$model_tip["name"];
+                        Yii::debug($fr);
+                        if($fr=="servicio"){
+                            $habera=[13272,13365];
+                        }
+
+                        if($fr=="producto"){
+                            $habera=[13272,14129];
+                        }
+                        Yii::debug($habera);
+
+
+
+
+                        $value=[$habera[0]=>$facturafin->iva,$habera[1]=>$facturafin->subtotal];
                         $accounting_seats_details=New AccountingSeatsDetails;
                         $accounting_seats_details->accounting_seat_id=$accounting_seats->id;
-                        $accounting_seats_details->chart_account_id=$haber;
-                        $accounting_seats_details->debit=0;
-                        $accounting_seats_details->credit=$value[$haber];
+                        $accounting_seats_details->chart_account_id=$debea;
+                        $accounting_seats_details->debit=$facturafin->total;
+                        $accounting_seats_details->credit=0;
                         $accounting_seats_details->cost_center_id=1;
                         $accounting_seats_details->status=true;
                         $accounting_seats_details->save();
+
+                        foreach($habera as $haber){
+                            $accounting_seats_details=New AccountingSeatsDetails;
+                            $accounting_seats_details->accounting_seat_id=$accounting_seats->id;
+                            $accounting_seats_details->chart_account_id=$haber;
+                            $accounting_seats_details->debit=0;
+                            $accounting_seats_details->credit=$value[$haber];
+                            $accounting_seats_details->cost_center_id=1;
+                            $accounting_seats_details->status=true;
+                            $accounting_seats_details->save();
+                        }
+                        $gr = rand(1, 100090000);
+                        if($fr=="producto"){
+                        $accounting_sea=new AccountingSeats;
+                        $accounting_sea->id= $gr;
+                        $accounting_sea->institution_id=$id_ins;
+                        $accounting_sea->description="fact2";
+                        $accounting_sea->nodeductible=$nodeductible;
+                        $accounting_sea->status=$status;
+                        if($accounting_sea->save()) {
+
+                            $debe = 13567;
+                            $haber = 23578;
+                            $pro = Yii::$app->request->post("Product");
+
+                            $accounting_seats_details = new AccountingSeatsDetails;
+                            $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
+                            $accounting_seats_details->chart_account_id = $debe;
+                            $accounting_seats_details->debit = $pro["costo"];
+                            $accounting_seats_details->credit = 0;
+                            $accounting_seats_details->cost_center_id = 1;
+                            $accounting_seats_details->status = true;
+                            $accounting_seats_details->save();
+                            $accounting_seats_details = new AccountingSeatsDetails;
+                            $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
+                            $accounting_seats_details->chart_account_id = $haber;
+                            $accounting_seats_details->debit = 0;
+                            $accounting_seats_details->credit = $pro["costo"];
+                            $accounting_seats_details->cost_center_id = 1;
+                            $accounting_seats_details->status = true;
+                            $accounting_seats_details->save();
+                        }
                     }
+
+
+
+                    }
+                    return $this->redirect('factura');
                 }
 
                 }
@@ -130,7 +190,7 @@ public function actionIndex(){
 
 
             return $this->render('factura', [
-                'model' => $model, 's' => False, "ven" => $persona, "model2" => $model2, "produc" => $pro, "pro2" => $precio, 'model3' => $facturafin,'query'=>$query
+                'model' => $model, 's' => False, "ven" => $persona, "model2" => $model2, "produc" => $pro, "pro2" => $precio, 'model3' => $facturafin,'query'=>$query,'proser'=>$proser,'precioser'=>$precioser,'modeltype'=>$model_tipo,'produ'=>$productos
             ]);
         }
 
