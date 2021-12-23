@@ -42,6 +42,8 @@ class HeadFact extends \yii\db\ActiveRecord
             [['id_saleman', 'id_personas'], 'integer'],
             [['f_timestamp'], 'safe'],
             [['n_documentos', 'id_personas', 'orden_cv'], 'required'],
+            [['n_documentos'],'string'],
+
             [['Entregado'], 'boolean'],
             [['n_documentos', 'referencia', 'orden_cv', 'autorizacion', 'tipo_de_documento'], 'string', 'max' => 50],
             [['n_documentos', 'n_documentos'], 'unique', 'targetAttribute' => ['n_documentos', 'n_documentos']],
@@ -58,13 +60,13 @@ class HeadFact extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'id_saleman' => 'Id Saleman',
-            'f_timestamp' => 'F Timestamp',
-            'n_documentos' => 'N Documentos',
+            'f_timestamp' => 'Fechas de Emisión',
+            'n_documentos' => 'Número de Factura',
             'id_personas' => 'Id Personas',
             'referencia' => 'Referencia',
             'orden_cv' => 'Orden Cv',
             'Entregado' => 'Entregado',
-            'autorizacion' => 'Autorizacion',
+            'autorizacion' => 'Autorización',
             'tipo_de_documento' => 'Tipo De Documento',
         ];
     }

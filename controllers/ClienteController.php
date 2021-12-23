@@ -210,5 +210,14 @@ public function actionIndex(){
             'model' => $query
         ]);
     }
+    public function actionGuardarproceso(){
+
+        if(Yii::$app->request->isAjax){
+            $data=Yii::$app->request->post();
+            Yii::debug($data);
+        }
+
+        $this->render("guardarproceso");
+    }
 
 }

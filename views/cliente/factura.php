@@ -7,6 +7,7 @@ use yii\bootstrap4\Modal;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -50,7 +51,8 @@ $request=Yii::$app->request->post('FacturaBody');
             <?= $form->field($model, 'referencia') ?>
             <?= $form->field($model, 'orden_cv') ?>
             <?= $form->field($model, 'autorizacion') ?>
-            <?= $form->field($model, 'tipo_de_documento') ?>
+            <?= $form->field($model, 'tipo_de_documento')->dropDownList(
+                ['a' => 'Cliente', 'b' => 'Proveedor']) ?>
         </div>
         <div class="form-group">
 
@@ -80,9 +82,10 @@ $request=Yii::$app->request->post('FacturaBody');
         <td><?= $form->field($model3, 'descuento')->label("descuento")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"desc"]) ?></td>
         <td><?= $form->field($model3, 'iva')->label("iva")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"iva"]) ?></td>
         <td><?= $form->field($model3, 'total')->label("total")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"total"]) ?></td>
+
     </div>
 </div>
-<?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+<?= Html::submitButton('Submit', ['class' => 'btn btn-primary','id'=>"buttonsubmit"]) ?>
 
 
 
@@ -125,6 +128,7 @@ Modal::end();
 <script type="text/javascript">
     var count=0;
     cov=[]
+
     $(document).ready(function(){
         $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
     })
@@ -168,7 +172,7 @@ count=count+1
     dapro=JSON.parse(pro)
      var c='<tr id="int'+count+'">'
          c+='<td>'
-       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can'+count+'" class="form-control" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
+       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" class="cant" id="can'+count+'" class="form-control" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
       c+='</td>'
      c+='<td>'
     c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select id="'+count+'" class="form-control la" name="Product['+count+'][name]"> <option value="">Select...</option>'
@@ -249,7 +253,7 @@ count=count+1
         d=$(this).val();
         f=JSON.parse('<?php echo $prelist?>');
         cost=JSON.parse('<?php echo $lcosto?>');
-        console.log(cost)
+        console.log(cost);
         $('#idn'+h+'').val(f[d]);
         co=cost[d]
         cost=$('#can'+h).val()*co
@@ -269,6 +273,7 @@ suma=0;
             sum=sum+parseFloat($(this).val());
 
         })
+        $('')
       $('#sub').val(sum)
         iva=sum*0.12;
         des=0;
@@ -278,7 +283,45 @@ suma=0;
         $('#total').val(total)
     })
     $('#añadir')
+$('#buttonsubmit').click(function(){
+cantidad=[];
+    preciou=[];
+    pro=[];
+    preciot=[];
+    $('.cant').each(function(){
+        cantidad.push($(this).val())
+    })
+    $('.la').each(function(){
+    pro.push($(this).val())
+    })
+    $('.preu').each(function(){
+    preciou.push($(this).val())
+    })
+    $('.cant').each(function(){
+    preciot.push($(this).val())
+    })
 
+
+    $.ajax({
+        method: "POST",
+        data: { cantidad:cantidad,produc:pro,preu:preciou,precioto:preciot },
+        url: '<?php echo Yii::$app->request->baseUrl. '/cliente/guardarproceso' ?>',
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+
+            //do something else
+            console.log(err);
+            if(err){
+                alert('It works!');
+            }
+
+        }
+
+    })
+
+})
 
 </script>
 
