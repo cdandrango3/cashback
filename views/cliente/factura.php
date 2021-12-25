@@ -47,7 +47,7 @@ $request=Yii::$app->request->post('FacturaBody');
         </div>
 
         <div class="col-6">
-            <?= $form->field($model, 'n_documentos') ?>
+            <?= $form->field($model, 'n_documentos')->textInput(["id"=>"ndocu"])?>
             <?= $form->field($model, 'referencia') ?>
             <?= $form->field($model, 'orden_cv') ?>
             <?= $form->field($model, 'autorizacion') ?>
@@ -172,7 +172,7 @@ count=count+1
     dapro=JSON.parse(pro)
      var c='<tr id="int'+count+'">'
          c+='<td>'
-       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" class="cant" id="can'+count+'" class="form-control" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
+       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can'+count+'" class="form-control cant" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
       c+='</td>'
      c+='<td>'
     c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select id="'+count+'" class="form-control la" name="Product['+count+'][name]"> <option value="">Select...</option>'
@@ -182,7 +182,7 @@ count=count+1
     c+='</select></div>'
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control" name="FacturaBody['+count+'][precio_u]" value="" readonly><div class="help-block"></div> </div> '
+    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value="" readonly><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
     c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
@@ -288,6 +288,7 @@ cantidad=[];
     preciou=[];
     pro=[];
     preciot=[];
+
     $('.cant').each(function(){
         cantidad.push($(this).val())
     })
@@ -297,14 +298,14 @@ cantidad=[];
     $('.preu').each(function(){
     preciou.push($(this).val())
     })
-    $('.cant').each(function(){
+    $('.g').each(function(){
     preciot.push($(this).val())
     })
-
+    n_docu= $('#ndocu').val();
 
     $.ajax({
         method: "POST",
-        data: { cantidad:cantidad,produc:pro,preu:preciou,precioto:preciot },
+        data: { cantidad:cantidad,produc:pro,preciou:preciou,precioto:preciot,ndocumento:n_docu },
         url: '<?php echo Yii::$app->request->baseUrl. '/cliente/guardarproceso' ?>',
         success: function (data) {
             console.log(data);

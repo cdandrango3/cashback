@@ -19,7 +19,7 @@ use yii\web\Controller;
 
 class ClienteController extends controller
 {
-    public $valores="";
+    public $id;
 public function actionIndex(){
     $models=New clients;
     $query = $models::find();
@@ -60,11 +60,12 @@ public function actionIndex(){
                 $model->save();
 
                 $c = rand(1, 100090000);
+                $this->id=$c;
                 $facturafin->id = $c;
                 $facturafin->subtotal = $d["subtotal"];
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
-                $facturafin->id_head = $model->id;
+                $facturafin->id_head = $model->n_documentos;
                 $facturafin->save();
 
                 if($model->save()){
@@ -165,26 +166,12 @@ public function actionIndex(){
             }
 
 
-        if ($model2->load(Yii::$app->request->post())) {
-            if ($model2->validate()) {
-
-            }
-            $c = Yii::$app->request->post('FacturaBody');
-            $per = Yii::$app->request->post('Person');
-
-            $d = Yii::$app->request->post('Facturafin');
-            foreach ($c as $fr) {
-                $model2->cant = $fr["cant"];
-
-                $model2->precio_u = $fr["precio_u"];
-                $model2->precio_total = $fr["precio_total"];
-                $model2->save();
-            }
 
 
 
 
-        }
+
+
 
 
 
@@ -214,8 +201,28 @@ public function actionIndex(){
 
         if(Yii::$app->request->isAjax){
             $data=Yii::$app->request->post();
-            Yii::debug($data);
+            $cantidad=$data['cantidad'];
+            $producto=$data['produc'];
+            $preciou=$data['preciou'];
+            $precioto=$data['precioto'];
+            $id_head=$data['ndocumento'];
+            yii::debug($id_head);
+            $i=count($cantidad);
+            for($k=0;$k<$i;$k++){
+                $id_product=New Product;
+                $i_pro=$id_product::findOne(['name'=>$producto[$k]]);
+                $facbody=New FacturaBody;
+                $facbody->cant=$cantidad[$k];
+                $facbody->precio_u=$preciou[$k];
+                $facbody->precio_total=$precioto[$k];
+                $facbody->id_producto=$i_pro->id;
+                $facbody->id_head=$id_head;
+                $facbody->save();
+
+
+            }
         }
+
 
         $this->render("guardarproceso");
     }

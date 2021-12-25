@@ -11,8 +11,8 @@ use Yii;
  * @property float|null $total
  * @property float|null $subtotal
  * @property int|null $descuento
+ * @property string $id_head
  * @property float|null $iva
- * @property int|null $id_head
  *
  * @property HeadFact $head
  */
@@ -33,9 +33,12 @@ class Facturafin extends \yii\db\ActiveRecord
     {
         return [
             [['total', 'subtotal', 'iva'], 'number'],
-            [['descuento', 'id_head'], 'default', 'value' => null],
-            [['descuento', 'id_head'], 'integer'],
-            [['id_head'], 'exist', 'skipOnError' => true, 'targetClass' => HeadFact::className(), 'targetAttribute' => ['id_head' => 'id']],
+            [['descuento'], 'default', 'value' => null],
+            [['descuento'], 'integer'],
+            [['id_head'], 'required'],
+            [['id_head'], 'string'],
+            [['id_head'], 'unique'],
+            [['id_head'], 'exist', 'skipOnError' => true, 'targetClass' => HeadFact::className(), 'targetAttribute' => ['id_head' => 'n_documentos']],
         ];
     }
 
@@ -49,8 +52,8 @@ class Facturafin extends \yii\db\ActiveRecord
             'total' => 'Total',
             'subtotal' => 'Subtotal',
             'descuento' => 'Descuento',
-            'iva' => 'Iva',
             'id_head' => 'Id Head',
+            'iva' => 'Iva',
         ];
     }
 
@@ -61,6 +64,6 @@ class Facturafin extends \yii\db\ActiveRecord
      */
     public function getHead()
     {
-        return $this->hasOne(HeadFact::className(), ['id' => 'id_head']);
+        return $this->hasOne(HeadFact::className(), ['n_documentos' => 'id_head']);
     }
 }

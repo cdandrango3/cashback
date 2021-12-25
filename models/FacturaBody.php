@@ -12,9 +12,9 @@ use Yii;
  * @property float|null $precio_u
  * @property float|null $precio_total
  * @property int|null $id_producto
+ * @property string|null $id_head
  *
  * @property Product $producto
- * @property Facturafin[] $facturafins
  */
 class FacturaBody extends \yii\db\ActiveRecord
 {
@@ -35,6 +35,7 @@ class FacturaBody extends \yii\db\ActiveRecord
             [['cant', 'id_producto'], 'default', 'value' => null],
             [['cant', 'id_producto'], 'integer'],
             [['precio_u', 'precio_total'], 'number'],
+            [['id_head'], 'string'],
             [['id_producto'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['id_producto' => 'id']],
         ];
     }
@@ -50,6 +51,7 @@ class FacturaBody extends \yii\db\ActiveRecord
             'precio_u' => 'Precio U',
             'precio_total' => 'Precio Total',
             'id_producto' => 'Id Producto',
+            'id_head' => 'Id Head',
         ];
     }
 
@@ -61,15 +63,5 @@ class FacturaBody extends \yii\db\ActiveRecord
     public function getProducto()
     {
         return $this->hasOne(Product::className(), ['id' => 'id_producto']);
-    }
-
-    /**
-     * Gets query for [[Facturafins]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFacturafins()
-    {
-        return $this->hasMany(Facturafin::className(), ['id_facd' => 'id']);
     }
 }
