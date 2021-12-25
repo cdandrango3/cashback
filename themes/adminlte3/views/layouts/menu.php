@@ -95,7 +95,7 @@ use yii\helpers\Url;
 
                 <ul class="nav nav-treeview">
                     <li class="nav-item has-treeview menu-closed">
-                        <a href="#" class="nav-link">
+                        <a href="<?= Url::to(['cliente/index']) ?>" class="nav-link">
                             <p>
                                 Compra/Venta
                                 <i class="right fas fa-angle-left"></i>
@@ -111,7 +111,7 @@ use yii\helpers\Url;
 
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="<?= Url::to(['clientes/index'], $schema = true) ?>" class="nav-link">
                                     <p>Clientes</p>
                                 </a>
                             </li>
@@ -163,7 +163,7 @@ use yii\helpers\Url;
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="<?= Url::to(['product/create'], $schema = true) ?>" class="nav-link">
                             <p>Servicios/Productos</p>
                         </a>
                     </li>
