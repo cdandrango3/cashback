@@ -37,7 +37,7 @@ class AccountingseatsdetailsController extends Controller
      * @return mixed
      */
     public function actionIndex()
-    {    
+    {
         $searchModel = new AccountingSeatsDetailsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -54,18 +54,18 @@ class AccountingseatsdetailsController extends Controller
      * @return mixed
      */
     public function actionView($id)
-    {   
+    {
         $request = Yii::$app->request;
         if($request->isAjax){
             Yii::$app->response->format = Response::FORMAT_JSON;
             return [
-                    'title'=> "AccountingSeatsDetails #".$id,
-                    'content'=>$this->renderAjax('view', [
-                        'model' => $this->findModel($id),
-                    ]),
-                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                            Html::a('Edit',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
-                ];    
+                'title'=> "AccountingSeatsDetails #".$id,
+                'content'=>$this->renderAjax('view', [
+                    'model' => $this->findModel($id),
+                ]),
+                'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                    Html::a('Edit',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
+            ];
         }else{
             return $this->render('view', [
                 'model' => $this->findModel($id),
@@ -82,7 +82,7 @@ class AccountingseatsdetailsController extends Controller
     public function actionCreate()
     {
         $request = Yii::$app->request;
-        $model = new AccountingSeatsDetails();  
+        $model = new AccountingSeatsDetails();
 
         if($request->isAjax){
             /*
@@ -96,28 +96,28 @@ class AccountingseatsdetailsController extends Controller
                         'model' => $model,
                     ]),
                     'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
-        
-                ];         
+                        Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
+
+                ];
             }else if($model->load($request->post()) && $model->save()){
                 return [
                     'forceReload'=>'#crud-datatable-pjax',
                     'title'=> "Create new AccountingSeatsDetails",
                     'content'=>'<span class="text-success">Create AccountingSeatsDetails success</span>',
                     'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                            Html::a('Create More',['create'],['class'=>'btn btn-primary','role'=>'modal-remote'])
-        
-                ];         
-            }else{           
+                        Html::a('Create More',['create'],['class'=>'btn btn-primary','role'=>'modal-remote'])
+
+                ];
+            }else{
                 return [
                     'title'=> "Create new AccountingSeatsDetails",
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),
                     'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
-        
-                ];         
+                        Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
+
+                ];
             }
         }else{
             /*
@@ -131,7 +131,7 @@ class AccountingseatsdetailsController extends Controller
                 ]);
             }
         }
-       
+
     }
 
     /**
@@ -144,7 +144,7 @@ class AccountingseatsdetailsController extends Controller
     public function actionUpdate($id)
     {
         $request = Yii::$app->request;
-        $model = $this->findModel($id);       
+        $model = $this->findModel($id);
 
         if($request->isAjax){
             /*
@@ -158,8 +158,8 @@ class AccountingseatsdetailsController extends Controller
                         'model' => $model,
                     ]),
                     'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
-                ];         
+                        Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
+                ];
             }else if($model->load($request->post()) && $model->save()){
                 return [
                     'forceReload'=>'#crud-datatable-pjax',
@@ -168,17 +168,17 @@ class AccountingseatsdetailsController extends Controller
                         'model' => $model,
                     ]),
                     'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                            Html::a('Edit',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
-                ];    
+                        Html::a('Edit',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
+                ];
             }else{
-                 return [
+                return [
                     'title'=> "Update AccountingSeatsDetails #".$id,
                     'content'=>$this->renderAjax('update', [
                         'model' => $model,
                     ]),
                     'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
-                ];        
+                        Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
+                ];
             }
         }else{
             /*
@@ -222,7 +222,7 @@ class AccountingseatsdetailsController extends Controller
 
     }
 
-     /**
+    /**
      * Delete multiple existing AccountingSeatsDetails model.
      * For ajax request will return json object
      * and for non-ajax request if deletion is successful, the browser will be redirected to the 'index' page.
@@ -230,7 +230,7 @@ class AccountingseatsdetailsController extends Controller
      * @return mixed
      */
     public function actionBulkdelete()
-    {        
+    {
         $request = Yii::$app->request;
         $pks = explode(',', $request->post( 'pks' )); // Array or selected records primary keys
         foreach ( $pks as $pk ) {
@@ -250,7 +250,7 @@ class AccountingseatsdetailsController extends Controller
             */
             return $this->redirect(['index']);
         }
-       
+
     }
 
     /**

@@ -15,6 +15,7 @@ use app\models\Salesman;
 use Cassandra\Date;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\Pagination;
 use yii\web\Controller;
 
 class ClienteController extends controller
@@ -22,12 +23,21 @@ class ClienteController extends controller
     public $id;
 public function actionIndex(){
     $models=New clients;
+    $modelhead=New HeadFact;
+    $modelf=New Facturafin;
+    $query1 = HeadFact::find();
+    Yii::debug($query1);
+    $pages = new Pagination(['defaultPageSize' => 10,'totalCount' => $query1->count()]);
+    $modelhe = $query1->offset($pages->offset)
+        ->limit($pages->limit)
+        ->all();
+    Yii::debug($modelhe);
     $query = $models::find();
     $dataProvider = new ActiveDataProvider([
         'query' => $query,
     ]);
 
-    return $this->render('index',["models"=>$dataProvider]);
+    return $this->render('index',["models"=>$dataProvider,"modelhead"=>$modelhead,"pages"=>$pages,"headfac"=>$modelhe]);
 }
     public function actionFactura()
     {
@@ -225,6 +235,12 @@ public function actionIndex(){
 
 
         $this->render("guardarproceso");
+    }
+    public function actionVer_detalle($id){
+            if(!isset($_GET["id"])){
+
+            }
+        $this->render("ver_detalle",["id"=>$id]);
     }
 
 }

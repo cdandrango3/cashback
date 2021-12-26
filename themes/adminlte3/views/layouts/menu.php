@@ -111,7 +111,7 @@ use yii\helpers\Url;
 
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="<?= Url::to(['clientes/index'], $schema = true) ?>" class="nav-link">
+                                <a href="<?= Url::to(['cliente/index'], $schema = true) ?>" class="nav-link">
                                     <p>Clientes</p>
                                 </a>
                             </li>
