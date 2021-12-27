@@ -1,12 +1,23 @@
 <?php
 
 use app\models\Product;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = 'Consultar Documento Fisico';
 $this->params['breadcrumbs'][] = $this->title;
 $producto=New Product;
 $this->registerCss(".su { margin: 10px; float:right; }");
 ?>
+<div class="container">
+    <div class="row">
+        <div class="col-6"></div>
+        <div class="col-6">
+            <?= HTML::a("Registro de cobros",Url::to(['cobros/cobros', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
+
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="card">
         <div class="card-head bg-primary p-2">
@@ -68,7 +79,7 @@ $this->registerCss(".su { margin: 10px; float:right; }");
             <div class="card p-2">
                 <strong>Subtotal:   </strong>  <div class="su"><?=$modelfin->subtotal?></div>
                 <strong>Iva: </strong>  <div class="su"> <?=$modelfin->iva ?></div>
-                <strong>Total: </strong>  <div class="su"><?=$modelfin->total ?><?=$modelfin->total ?></div>
+                <strong>Total: </strong>  <div class="su"><?=$modelfin->iva ?><?=$modelfin->total ?></div>
             </div>
         </div>
     </div>
