@@ -50,7 +50,7 @@ echo HTML::a('crear factura',['cliente/factura'],['class'=>['btn btn-success flo
     </td>
     <td><?=Yii::$app->formatter->asDate($fac->f_timestamp, 'php:Y-m-d');?></td>
     <td>
-        <?= HTML::a("fac" .  $fac->n_documentos,Url::to(['cliente/ver_detalle', 'id' => $fac->n_documentos]))?></td>
+        <?= HTML::a("fac" .  $fac->n_documentos,Url::to(['cliente/viewf', 'id' => $fac->n_documentos]))?></td>
     <td>
          <?= $total->subtotal?>
     </td>
@@ -60,5 +60,10 @@ echo HTML::a('crear factura',['cliente/factura'],['class'=>['btn btn-success flo
 <?php endforeach ?>
 </tbody>
 </table>
-    <?= LinkPager::widget(['pagination'=>$pages])?>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <?= LinkPager::widget(['pagination'=>$pages])?>
+        </ul>
+    </nav>
+
 </div>

@@ -27,7 +27,7 @@ public function actionIndex(){
     $modelf=New Facturafin;
     $query1 = HeadFact::find();
     Yii::debug($query1);
-    $pages = new Pagination(['defaultPageSize' => 10,'totalCount' => $query1->count()]);
+    $pages = new Pagination(['defaultPageSize' => 5,'totalCount' => $query1->count()]);
     $modelhe = $query1->offset($pages->offset)
         ->limit($pages->limit)
         ->all();
@@ -39,6 +39,22 @@ public function actionIndex(){
 
     return $this->render('index',["models"=>$dataProvider,"modelhead"=>$modelhead,"pages"=>$pages,"headfac"=>$modelhe]);
 }
+    public function actionViewf($id){
+    $modelhead=New HeadFact;
+    $modelbody=New FacturaBody;
+    $modelfin=New Facturafin;
+        $persona=New Person;
+
+
+    $id=$_GET["id"];
+    $model1=$modelhead::findOne($id);
+    $model2=$modelbody::find()->where(["id_head"=>$id])->all();
+    $model3=$modelfin::findOne(["id_head"=>$id]);
+    $persona=$persona::findOne(["id"=>$model1->id_personas]);
+
+
+        return $this->render("viewf",["model"=>$model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona]);
+    }
     public function actionFactura()
     {
         $model = new HeadFact;
@@ -207,6 +223,12 @@ public function actionIndex(){
             'model' => $query
         ]);
     }
+
+    public function actionVer(){
+
+
+        $this->render("ver",["hola"=>"carton"]);
+    }
     public function actionGuardarproceso(){
 
         if(Yii::$app->request->isAjax){
@@ -236,11 +258,6 @@ public function actionIndex(){
 
         $this->render("guardarproceso");
     }
-    public function actionVer_detalle($id){
-            if(!isset($_GET["id"])){
 
-            }
-        $this->render("ver_detalle",["id"=>$id]);
-    }
 
 }

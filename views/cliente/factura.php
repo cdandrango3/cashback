@@ -35,7 +35,14 @@ $request=Yii::$app->request->post('FacturaBody');
 
 <div class="cliente-factura">
 
+
     <?php $form = ActiveForm::begin(); ?>
+    <div class="container">
+        <div class="card ">
+            <div class="card-head bg-primary p-4">
+               <h4 >Datos de la factura</h4>
+            </div>
+            <div class="card-body p-4">
     <div class="row">
         <div class="col-6">
             <?= $form->field($model, 'f_timestamp')->label("Fecha de Emision");?>
@@ -52,7 +59,10 @@ $request=Yii::$app->request->post('FacturaBody');
             <?= $form->field($model, 'orden_cv') ?>
             <?= $form->field($model, 'autorizacion') ?>
             <?= $form->field($model, 'tipo_de_documento')->dropDownList(
-                ['a' => 'Cliente', 'b' => 'Proveedor']) ?>
+                ['Cliente' => 'Cliente', 'Proveedor' => 'Proveedor'],["id" =>"tipodocu"])?>
+       </div>
+        </div>
+    </div>
         </div>
         <div class="form-group">
 
@@ -135,6 +145,10 @@ Modal::end();
     $('#buscar').click(function() {
         $('#modal').modal('show')
             .find('#modalContent')
+    })
+    $('#tipodocu').change(function(){
+        tipo=$(this).attr('id')
+
     })
     $('#listtype').change(function(){
         c=$(this).val();
@@ -247,7 +261,7 @@ count=count+1
         });
         return false;
     });
-
+$
     $(document).on('change','.la',function(){
         h=$(this).attr("id");
         d=$(this).val();
