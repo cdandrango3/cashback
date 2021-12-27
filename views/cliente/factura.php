@@ -19,7 +19,8 @@ $listPrecio=ArrayHelper::map($pro2,"name","precio");
 $listcosto=ArrayHelper::map($pro2,"name","costo");
 $listService=ArrayHelper::map($proser,"name","precio");
 $listServicepre=ArrayHelper::map($precioser,"name","precio");
-
+$phpvar="s";
+print_r($phpvar);
 $listtypepro=ArrayHelper::map($modeltype,"name","name");
 $listruc=ArrayHelper::map($query,"id","id");
 $prelist=\yii\helpers\Json::encode($listPrecio);
@@ -27,7 +28,6 @@ $listse=\yii\helpers\Json::encode($listService);
 $prolist=\yii\helpers\Json::encode($listProduct);
 $lcosto=\yii\helpers\Json::encode($listcosto);
 $authItemChild = Yii::$app->request->post('Person');
-
 $auth = Yii::$app->request->post('HeadFact');
 $request=Yii::$app->request->post('FacturaBody');
 
@@ -46,9 +46,9 @@ $request=Yii::$app->request->post('FacturaBody');
     <div class="row">
         <div class="col-6">
             <?= $form->field($model, 'f_timestamp')->label("Fecha de Emision");?>
-            <?=$form->field($ven[0],"id")->dropDownList($listruc,['prompt'=>'Select...'])->label("Persona");?>
+            <?=$form->field($ven[0],"id")->dropDownList($listruc,['prompt'=>'Select...',"id"=>"dop1"])->label("Persona");?>
 
-            <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...'])->label("vendedor");?>
+            <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...',"id"=>"vendedor"])->label("vendedor");?>
             <?= $form->field($model, 'Entregado')->checkBox(['label' => 'entregado']);  ?>
             <?=$form->field($modeltype[0],"name")->dropDownList($listtypepro,['prompt'=>'Select...','id'=>'listtype'])->label("tipo venta");?>
         </div>
@@ -88,10 +88,10 @@ $request=Yii::$app->request->post('FacturaBody');
     </div>
     <div class="col-5">
         <?= $form->field($produ, 'costo')->label("subtotal")->textInput(['value' =>"" ,"id"=>"pre",'type'=>"hidden"]) ?>
-        <td><?= $form->field($model3, 'subtotal')->label("subtotal")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"sub"]) ?></td>
-        <td><?= $form->field($model3, 'descuento')->label("descuento")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"desc"]) ?></td>
-        <td><?= $form->field($model3, 'iva')->label("iva")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"iva"]) ?></td>
-        <td><?= $form->field($model3, 'total')->label("total")->textInput(['readonly' => false ,'value' =>"" ,"id"=>"total"]) ?></td>
+        <td><?= $form->field($model3, 'subtotal')->label("subtotal")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"sub"]) ?></td>
+        <td><?= $form->field($model3, 'descuento')->label("descuento")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"desc"]) ?></td>
+        <td><?= $form->field($model3, 'iva')->label("iva")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"iva"]) ?></td>
+        <td><?= $form->field($model3, 'total')->label("total")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"total"]) ?></td>
 
     </div>
 </div>
@@ -146,9 +146,25 @@ Modal::end();
         $('#modal').modal('show')
             .find('#modalContent')
     })
-    $('#tipodocu').change(function(){
-        tipo=$(this).attr('id')
 
+    $('#tipodocu').change(function(){
+        tipo=$(this).val()
+        if (tipo=="Proveedor") {
+            $("#vendedor").hide()
+        }
+        else{
+            $("#vendedor").show()
+        }
+
+
+        $.get('<?php echo Yii::$app->request->baseUrl. '/cliente/getdata' ?>',{data:tipo},function(data){
+
+           datos=data;
+
+
+
+
+        });
     })
     $('#listtype').change(function(){
         c=$(this).val();
@@ -172,7 +188,6 @@ Modal::end();
         }
         })
 $(añadir).click(function(){
-
 count=count+1
  f=document.getElementById('listtype').value
   if(f=='servicio'){

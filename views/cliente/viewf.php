@@ -5,6 +5,7 @@ use app\models\Product;
 $this->title = 'Consultar Documento Fisico';
 $this->params['breadcrumbs'][] = $this->title;
 $producto=New Product;
+$this->registerCss(".su { margin: 10px; float:right; }");
 ?>
 <div class="container">
     <div class="card">
@@ -54,6 +55,21 @@ $producto=New Product;
           </tbody>
 
           </table>
+        </div>
+    </div>
+
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-7">
+
+        </div>
+        <div class="col-5">
+            <div class="card p-2">
+                <strong>Subtotal:   </strong>  <div class="su"><?=$modelfin->subtotal?></div>
+                <strong>Iva: </strong>  <div class="su"> <?=$modelfin->iva ?></div>
+                <strong>Total: </strong>  <div class="su"><?=$modelfin->total ?><?=$modelfin->total ?></div>
+            </div>
         </div>
     </div>
 </div>

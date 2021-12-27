@@ -11,8 +11,10 @@ use app\models\Person;
 use app\models\HeadFact;
 use app\models\Product;
 use app\models\ProductType;
+use app\models\Providers;
 use app\models\Salesman;
 use Cassandra\Date;
+use yii\web\Json;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
@@ -206,7 +208,21 @@ public function actionIndex(){
                 'model' => $model, 's' => False, "ven" => $persona, "model2" => $model2, "produc" => $pro, "pro2" => $precio, 'model3' => $facturafin,'query'=>$query,'proser'=>$proser,'precioser'=>$precioser,'modeltype'=>$model_tipo,'produ'=>$productos
             ]);
         }
-
+public function actionGetdata($data){
+    $model=New Providers;
+    $model2=New Clients;
+    $model3=New Person;
+if ($data=="Proveedor"){
+    $model2::find()->all();
+    echo \yii\helpers\Json::encode($model3::find()->innerJoin("clients","person.id=clients.person_id")->all());
+}
+else{
+    if ($data=="Cliente"){
+        $model2::find()->all();
+        echo \yii\helpers\Json::encode($model3::find()->innerJoin("providers","person.id=providers.person_id")->all());
+    }
+}
+}
     public function actionFormclientrender(){
     $person=new Person;
     $query=$person::find()->select("ruc")->all();
