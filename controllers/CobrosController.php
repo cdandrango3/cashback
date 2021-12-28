@@ -18,7 +18,8 @@ $Header=New HeadFact;
 $id=$_GET['id'];
 $body=Facturafin::findOne(["id_head"=>$id]);
 $header=$Header->findOne($id);
+$persona=$Persona::findOne(["id"=>$header->id_personas]);
 
-return $this->render("index",["chargem"=>$chargem,"Person"=>$Persona,"body"=>$body,"header"=>$header]);
+return $this->render("index",["chargem"=>$chargem,"Person"=>$persona,"body"=>$body,"header"=>$header]);
 }
 }
