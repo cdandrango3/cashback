@@ -38,9 +38,8 @@ class Charges extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'date'], 'required'],
+            [['date'], 'required'],
             [['id', 'person_id'], 'default', 'value' => null],
-            [['id', 'person_id'], 'integer'],
             [['type_charge', 'n_document', 'comprobante', 'Description'], 'string'],
             [['saldo', 'balance', 'amount'], 'number'],
             [['status'], 'boolean'],
