@@ -59,7 +59,12 @@ $request=Yii::$app->request->post('FacturaBody');
             <?= $form->field($model, 'orden_cv') ?>
             <?= $form->field($model, 'autorizacion') ?>
             <?= $form->field($model, 'tipo_de_documento')->dropDownList(
-                ['Cliente' => 'Cliente', 'Proveedor' => 'Proveedor'],["id" =>"tipodocu"])?>
+                ['Cliente' => 'Cliente', 'Proveedor' => 'Proveedor'],["id" =>"tipodocu",'onchange'=>'
+            $.post( "'.urldecode(Yii::$app->urlManager->createUrl('cliente/getdata?data=')).'"+$(this).val(), function( data ) {
+              $( "select#dop1" ).html( data );
+              console.log(data)
+            });
+        '])?>
        </div>
         </div>
     </div>
@@ -151,9 +156,11 @@ Modal::end();
         tipo=$(this).val()
         if (tipo=="Proveedor") {
             $("#vendedor").hide()
+                $(".preu").val("");
         }
         else{
             $("#vendedor").show()
+            $(".preu").val("");
         }
 
 
@@ -280,7 +287,19 @@ $
     $(document).on('change','.la',function(){
         h=$(this).attr("id");
         d=$(this).val();
-        f=JSON.parse('<?php echo $prelist?>');
+       tip= $('#tipodocu').val();
+       console.log(tip)
+       if(tip=="Cliente"){
+           f=JSON.parse('<?php echo $prelist?>');
+
+       }
+       else {
+           if (tip == "Proveedor") {
+               f = JSON.parse('<?php echo $lcosto?>');
+
+           }
+       }
+
         cost=JSON.parse('<?php echo $lcosto?>');
         console.log(cost);
         $('#idn'+h+'').val(f[d]);

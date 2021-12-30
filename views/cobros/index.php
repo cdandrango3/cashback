@@ -70,7 +70,10 @@ $form->field($chargem,'Description')->label("Descripción")->textarea(['rows' =>
                <?php $d=$chargem::findOne(["n_document"=>$header->n_documentos])?>
            <td><?=$d->saldo?></td>
            <?php } ?>
-           <td><?= $form->field($chargem,'amount')->label(false); ?></td>
+           <td><?= $form->field($chargem,'amount',[
+    'template' => '<div class="input-group">{input}
+          <a class="btn btn-primary" id="copiar">Copiar</a></div> {error}{hint}'
+])->label(false)->textInput(["id"=>"labec"]); ?></td>
        </tr>
         </tbody>
         </table>
@@ -94,6 +97,10 @@ $('#efectivo').click(function() {
      $('#compro').val("")   
   }
 });
+$('#copiar').click(function(){
+   
+    $('#labec').val($body->total)
+})
        $('#tipodocu').change(function(){
            actual=$(this).val();
            if(actual=="Caja"){
