@@ -3,6 +3,7 @@
 namespace app\controllers;
 use app\models\AccountingSeats;
 use app\models\AccountingSeatsDetails;
+use app\models\ChartAccounts;
 use app\models\Clients;
 use app\models\FacturaBody;
 use app\models\Facturafin;
@@ -106,7 +107,7 @@ public function actionIndex(){
                         $id_ins = $ins->institution_id;
 
                         $descripcion = "fact1";
-                        $nodeductible = True;
+                        $nodeductible = False;
                         $status = True;
                         $h = rand(1, 10000000);
                         $accounting_seats->id = $h;
@@ -126,7 +127,7 @@ public function actionIndex(){
                                 }
 
                                 if ($fr == "producto") {
-                                    $habera = [13272, 14129];
+                                    $habera = [13272, 13364];
                                 }
                                 Yii::debug($habera);
 
@@ -160,7 +161,6 @@ public function actionIndex(){
                                     $accounting_sea->nodeductible = $nodeductible;
                                     $accounting_sea->status = $status;
                                     if ($accounting_sea->save()) {
-
                                         $debe = 13567;
                                         $haber = 23578;
                                         $pro = Yii::$app->request->post("Product");
