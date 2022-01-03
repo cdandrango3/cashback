@@ -80,21 +80,25 @@ $costcenterdata = ArrayHelper::map(CostCenter::find()->Select(["id", "name"])->W
                                 </td>
                                 <td>
                                     <div class="form-group" id="<?= 'account' . $i.'_group'?>">
-                                    <?=
-                                        Select2::widget([
-                                            'id' => 'account' . $i,
-                                            'name' => 'account[]',
-                                            'data' => $accountdata,
-                                            'options' => [
-                                                'placeholder' => 'Seleccione cuenta',
-                                                'class'=>'account',
-                                            ],
-                                            'pluginOptions' => [
-                                                'allowClear' => true,
-                                                'dropdownParent' => '#ajaxCrudModal',
-                                            ],
-                                        ]);
-                                    ?>
+                                        <div class="card">
+                                            <div class="card-header bg-primary">
+                                                COntabilidad
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-sm-6 col-md-6 col-12 ">
+
+                                                    </div>
+                                                </div> <div class="card">
+                                                    <div class="card-header bg-primary">
+                                                        COntabilidad
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6 col-sm-6 col-md-6 col-12 ">
+
+                                                            </div>
+                                                        </div>
                                     </div>
                                 </td>
                                 <td>

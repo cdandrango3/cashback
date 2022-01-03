@@ -4,10 +4,17 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\product */
 /* @var $form yii\widgets\ActiveForm */
+$accountdata = ArrayHelper::map(\app\models\ChartAccounts::find()
+    ->Select(["id,concat(code,' ',slug) as name"])
+    ->alias('t')
+    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->asArray()->all(),'id', 'name');
+Yii::debug($accountdata);
 $listpr=ArrayHelper::map($model2,"name","name");
 ?>
 
@@ -26,16 +33,14 @@ $listpr=ArrayHelper::map($model2,"name","name");
 
                 <?= $form->field($model, 'status')->checkbox() ?>
                 <?=$form->field($model2[0],"name")->dropDownList($listpr,['prompt'=>'Select...','readonly'=>false,'id'=>'listpr'])->label("tipo");?>
-                <?= $form->field($model, 'institution_id')->textInput() ?>
 
                 <?= $form->field($model, 'category')->textInput(['maxlength' => true]) ?>
 
                     </div>
                     <div class="col-lg-6 col-sm-6 col-md-6 col-12 ">
                 <?= $form->field($model, 'brand')->textInput(['maxlength' => true]) ?>
-                <?= $form->field($model, 'purpose')->textInput(['maxlength' => true]) ?>
 
-                <?= $form->field($model, 'product_iva_id')->textInput() ?>
+                <?= $form->field($model, 'product_iva_id')->dropDownList(['12' => '12%', '0' => '0%'], ['prompt' => 'Seleccione una opción']); ?>
 
                 <?= $form->field($model, 'precio')->textInput() ?>
 
@@ -43,7 +48,54 @@ $listpr=ArrayHelper::map($model2,"name","name");
 
                     </div>
                 </div>
+                </div>
+            </div>
+    <div class="card">
+        <div class="card-header bg-primary">
+            Contabilidad
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-6 col-sm-6 col-md-6 col-12 ">
+                    <?=HTML::tag("label","Activos")?>
+                    <?=
+                    Select2::widget([
+                        'model' => $model,
+                        'attribute' => 'chairaccount_id',
+                        'id' => 'account',
+                        'name' => 'account_data',
+                        'data' => $accountdata,
+                        'options' => [
+                            'placeholder' => 'Seleccione una cuenta contable',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                    ]);
+                    ?>
+                    <br>
+                    <br>
+                    <?=HTML::tag("label","Inventarios")?>
+                    <?=
 
+                    Select2::widget([
+                        'model' => $model,
+                        'attribute' => 'Chairinve',
+                        'id' => 'account',
+                        'name' => 'accountive',
+                        'data' => $accountdata,
+                        'options' => [
+                            'placeholder' => 'Seleccione una cuenta contable',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                    ]);
+                    ?>
+                </div>
+                </div>
+            </div>
+</div>
         <div class="form-group">
             <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
         </div>

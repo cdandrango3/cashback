@@ -10,14 +10,14 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property bool $status
- * @property int $institution_id
  * @property string|null $category
  * @property int $product_type_id
  * @property string|null $brand
- * @property string|null $purpose
  * @property int $product_iva_id
  * @property float|null $precio
  * @property float|null $costo
+ * @property int|null $chairaccount_id
+ * @property int|null $Chairinve
  *
  * @property FacturaBody[] $facturaBodies
  */
@@ -37,13 +37,15 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'institution_id', 'product_type_id', 'product_iva_id'], 'required'],
+            [['name', 'product_type_id', 'product_iva_id','chairaccount_id', 'Chairinve'], 'required'],
             [['status'], 'boolean'],
-            [['institution_id', 'product_type_id', 'product_iva_id'], 'default', 'value' => null],
-            [['institution_id', 'product_type_id', 'product_iva_id'], 'integer'],
+            [['product_type_id', 'product_iva_id', 'chairaccount_id', 'Chairinve'], 'default', 'value' => null],
+            [['product_type_id', 'product_iva_id', 'chairaccount_id', 'Chairinve'], 'integer'],
+
             [['precio', 'costo'], 'number'],
-            [['name', 'brand', 'purpose'], 'string', 'max' => 250],
+            [['name', 'brand'], 'string', 'max' => 250],
             [['category'], 'string', 'max' => 258],
+            [['name'], 'unique'],
         ];
     }
 
@@ -55,15 +57,15 @@ class Product extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Nombre',
-            'status' => 'Status',
-            'institution_id' => 'Institucion',
-            'category' => 'Categorias',
-            'product_type_id' => 'Tipo de producto',
+            'status' => 'Disponible',
+            'Categoria' => 'Categoria',
+            'product_type_id' => 'Product Type ID',
             'brand' => 'Marca',
-            'purpose' => 'Proposito',
-            'product_iva_id' => 'Producto Iva',
+            'product_iva_id' => 'Iva',
             'precio' => 'Precio',
             'costo' => 'Costo',
+            'chairaccount_id' => 'Chairaccount ID',
+            'Chairinve' => 'Chairinve',
         ];
     }
 

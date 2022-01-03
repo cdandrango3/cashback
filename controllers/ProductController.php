@@ -71,8 +71,8 @@ class ProductController extends Controller
         if ($model2->load(Yii::$app->request->post())) {
 
             if ($model->load(Yii::$app->request->post())) {
-               $c=$model2::findOne(['name'=>$model2["name"]]);
-               Yii::debug($c);
+                $c=$model2::findOne(['name'=>$model2["name"]]);
+                Yii::debug($c);
                 $model2::find()->select("name")->all();
                 $model->product_type_id=$c->id;
                 $model->save();

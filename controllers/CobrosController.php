@@ -48,11 +48,11 @@ if($chargem->validate()){
             $chargem->save();
             $gr = rand(1, 100090000);
             if($chargem->type_charge=="Caja"){
-               $this->asientoscreate($gr,44561,13133,$body);
+               $this->asientoscreate($gr,13586,13133,$body);
             }
             else{
                 if($chargem->type_charge=="Transferencia" || $chargem->type_charge=="Cheque"){
-                    $this->asientoscreate($gr,44563,13133,$body);
+                    $this->asientoscreate($gr,13125,13133,$body);
                 }
             }
         }

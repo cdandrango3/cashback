@@ -218,7 +218,7 @@ count=count+1
     c+='</select></div>'
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value="" readonly><div class="help-block"></div> </div> '
+    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
     c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
@@ -283,37 +283,87 @@ count=count+1
         });
         return false;
     });
-$
+function calcular(){
+    tip= $('#tipodocu').val();
+    console.log(tip)
+    if(tip=="Cliente"){
+        f=JSON.parse('<?php echo $prelist?>');
+
+    }
+    else {
+        if (tip == "Proveedor") {
+            f = JSON.parse('<?php echo $lcosto?>');
+
+        }
+    }
+
+    cost=JSON.parse('<?php echo $lcosto?>');
+    console.log(cost);
+    $('#idn'+h+'').val(f[d]);
+    co=cost[d]
+    cost=$('#can'+h).val()*co
+    suma=0;
+    cov.push(cost);
+    console.log(cov)
+    for (const element of cov){
+        suma=suma+parseFloat(element)
+    }
+    console.log(suma)
+    $('#pre').val(suma)
+    re=($('#can'+h).val())*($('#idn'+h).val())
+    $('#valtotal'+h).val(re);
+    console.log(cost)
+    sum=0;
+    $('.g').each(function(){
+        sum=sum+parseFloat($(this).val());
+
+    })
+    $('')
+    $('#sub').val(sum)
+    iva=sum*0.12;
+    des=0;
+    total=sum+iva+des;
+    $('#iva').val(iva)
+    $('#des').val(iva)
+    $('#total').val(total)
+}
     $(document).on('change','.la',function(){
         h=$(this).attr("id");
         d=$(this).val();
-       tip= $('#tipodocu').val();
-       console.log(tip)
-       if(tip=="Cliente"){
-           f=JSON.parse('<?php echo $prelist?>');
+        calcular();
+    })
+    $(document).on('keyup','.cant',function(){
+        te=$(this).attr("id");
+        h=te.substring(3);
+        console.log(h)
+        d=$('#'+h).val();
+        console.log(d);
+        tip= $('#tipodocu').val();
+        console.log(tip)
+        if(tip=="Cliente"){
+            f=JSON.parse('<?php echo $prelist?>');
 
-       }
-       else {
-           if (tip == "Proveedor") {
-               f = JSON.parse('<?php echo $lcosto?>');
+        }
+        else {
+            if (tip == "Proveedor") {
+                f = JSON.parse('<?php echo $lcosto?>');
 
-           }
-       }
+            }
+        }
 
         cost=JSON.parse('<?php echo $lcosto?>');
-        console.log(cost);
+        console.log(f[d]);
         $('#idn'+h+'').val(f[d]);
-        co=cost[d]
-        cost=$('#can'+h).val()*co
-suma=0;
-        cov.push(cost);
+        console.log($('#idn'+h+'').val())
+        suma=0;
         console.log(cov)
         for (const element of cov){
             suma=suma+parseFloat(element)
         }
         console.log(suma)
         $('#pre').val(suma)
-        re=($('#can'+h).val())*($('#idn'+h).val())
+        re=($(this).val())*($('#idn'+h).val())
+        console.log($(this).val());
         $('#valtotal'+h).val(re);
         console.log(cost)
         sum=0;
@@ -322,7 +372,7 @@ suma=0;
 
         })
         $('')
-      $('#sub').val(sum)
+        $('#sub').val(sum)
         iva=sum*0.12;
         des=0;
         total=sum+iva+des;
@@ -330,6 +380,7 @@ suma=0;
         $('#des').val(iva)
         $('#total').val(total)
     })
+
     $('#añadir')
 $('#buttonsubmit').click(function(){
 cantidad=[];

@@ -24,6 +24,7 @@ use yii\web\Controller;
 class ClienteController extends controller
 {
     public $id;
+    public $id_product;
 public function actionIndex(){
     $models=New clients;
     $modelhead=New HeadFact;
@@ -154,6 +155,13 @@ public function actionIndex(){
                                 }
                                 $gr = rand(1, 100090000);
                                 if ($fr == "producto") {
+                                    $bodyf=FacturaBody::find()->where(['id_head'=>$model->n_documentos])->all();
+                                    $sum=0;
+                                    foreach ($bodyf as $bod){
+                                        $cos=Product::findOne(["id"=>$bod->id_producto]);
+                                        Yii::debug($cos);
+                                        $sum=$sum+(($cos->costo)*($bod->cant));
+                                    }
                                     $accounting_sea = new AccountingSeats;
                                     $accounting_sea->id = $gr;
                                     $accounting_sea->institution_id = $id_ins;
@@ -161,14 +169,14 @@ public function actionIndex(){
                                     $accounting_sea->nodeductible = $nodeductible;
                                     $accounting_sea->status = $status;
                                     if ($accounting_sea->save()) {
-                                        $debe = 13567;
-                                        $haber = 23578;
+                                        $debe = 13390;
+                                        $haber = 13148;
                                         $pro = Yii::$app->request->post("Product");
 
                                         $accounting_seats_details = new AccountingSeatsDetails;
                                         $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
                                         $accounting_seats_details->chart_account_id = $debe;
-                                        $accounting_seats_details->debit = $pro["costo"];
+                                        $accounting_seats_details->debit = $sum;
                                         $accounting_seats_details->credit = 0;
                                         $accounting_seats_details->cost_center_id = 1;
                                         $accounting_seats_details->status = true;
@@ -177,7 +185,7 @@ public function actionIndex(){
                                         $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
                                         $accounting_seats_details->chart_account_id = $haber;
                                         $accounting_seats_details->debit = 0;
-                                        $accounting_seats_details->credit = $pro["costo"];
+                                        $accounting_seats_details->credit = $sum;
                                         $accounting_seats_details->cost_center_id = 1;
                                         $accounting_seats_details->status = true;
                                         $accounting_seats_details->save();
@@ -207,7 +215,7 @@ public function actionIndex(){
                             $accounting_seats->nodeductible = $nodeductible;
                             $accounting_seats->status = $status;
                             if ($accounting_seats->save()) {
-                                $debea= [13567, 49002];
+                                $debea= [13148, 13161];
                                 $habera = $accou_c;
                                 $value = [$debea[0] => $facturafin->subtotal, $debea[1] => $facturafin->iva];
                                 foreach ($debea as $debea) {
@@ -316,9 +324,8 @@ else{
                 $facbody->id_producto=$i_pro->id;
                 $facbody->id_head=$id_head;
                 $facbody->save();
-
-
             }
+
         }
 
 
