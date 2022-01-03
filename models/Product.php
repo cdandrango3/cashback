@@ -13,11 +13,12 @@ use Yii;
  * @property string|null $category
  * @property int $product_type_id
  * @property string|null $brand
- * @property int $product_iva_id
+ * @property float $product_iva_id
  * @property float|null $precio
  * @property float|null $costo
  * @property int|null $chairaccount_id
  * @property int|null $Chairinve
+ * @property int|null $charingresos
  *
  * @property FacturaBody[] $facturaBodies
  */
@@ -37,12 +38,11 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'product_type_id', 'product_iva_id','chairaccount_id', 'Chairinve'], 'required'],
+            [['name', 'product_type_id', 'product_iva_id'], 'required'],
             [['status'], 'boolean'],
-            [['product_type_id', 'product_iva_id', 'chairaccount_id', 'Chairinve'], 'default', 'value' => null],
-            [['product_type_id', 'product_iva_id', 'chairaccount_id', 'Chairinve'], 'integer'],
-
-            [['precio', 'costo'], 'number'],
+            [['product_type_id', 'chairaccount_id', 'Chairinve', 'charingresos'], 'required'],
+            [['product_type_id', 'chairaccount_id', 'Chairinve', 'charingresos'], 'integer'],
+            [['product_iva_id', 'precio', 'costo'], 'number'],
             [['name', 'brand'], 'string', 'max' => 250],
             [['category'], 'string', 'max' => 258],
             [['name'], 'unique'],
@@ -58,14 +58,15 @@ class Product extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Nombre',
             'status' => 'Disponible',
-            'Categoria' => 'Categoria',
+            'category' => 'Categoria',
             'product_type_id' => 'Product Type ID',
             'brand' => 'Marca',
-            'product_iva_id' => 'Iva',
+            'product_iva_id' => 'Product Iva',
             'precio' => 'Precio',
             'costo' => 'Costo',
             'chairaccount_id' => 'Chairaccount ID',
             'Chairinve' => 'Chairinve',
+            'charingresos' => 'Charingresos',
         ];
     }
 

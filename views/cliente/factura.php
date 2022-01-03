@@ -80,6 +80,7 @@ $request=Yii::$app->request->post('FacturaBody');
     <th>Cantidad</th>
     <th> Producto </th>
     <th> Valor unitario </th>
+    <th> Descuento</th>
     <th> Valor final </th>
     </thead>
     <tbody id="nuevo">
@@ -221,8 +222,11 @@ count=count+1
     c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
+    c+='<div class="form-group field-desc"><label class="control-label" for="facturabody-+count+-desc"></label><input type="text" id="desc'+count+'" class="form-control desc" name="FacturaBody['+count+'][desc]" value="">'
+    c+='</td>'
     c+='<td>'
+    c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
+    c+='</td>'
     c+='<button class="btn btn-danger mt-3 remove" id="'+count+'">Eliminar</button>'
     c+='</td>'
     c+='</tr>'
@@ -380,7 +384,35 @@ function calcular(){
         $('#des').val(iva)
         $('#total').val(total)
     })
+    $(document).on('keyup','.desc',function(){
+        te=$(this).attr("id");
+        h=te.substring(4);
+        console.log(h);
 
+        preciou=$('#idn'+h+'').val();
+        cant=$('#can'+h).val();
+        $('#valtotal'+h).val(preciou*cant);
+        val=$('#valtotal'+h).val();
+        desc=val*($(this).val())/100;
+        val=$('#valtotal'+h).val();
+        valf=val-desc;
+        $('#valtotal'+h).val(valf);
+
+        sum=0;
+        $('.g').each(function(){
+            sum=sum+parseFloat($(this).val());
+
+        })
+        $('')
+        $('#sub').val(sum)
+        iva=sum*0.12;
+        des=0;
+        total=sum+iva+des;
+        $('#iva').val(iva)
+        $('#desc').val(desc)
+        $('#total').val(total)
+        console.log(val);
+    })
     $('#añadir')
 $('#buttonsubmit').click(function(){
 cantidad=[];

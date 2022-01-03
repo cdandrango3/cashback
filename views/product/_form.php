@@ -14,7 +14,13 @@ $accountdata = ArrayHelper::map(\app\models\ChartAccounts::find()
     ->Select(["id,concat(code,' ',slug) as name"])
     ->alias('t')
     ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->asArray()->all(),'id', 'name');
-Yii::debug($accountdata);
+
+$accountdataingresos = ArrayHelper::map(\app\models\ChartAccounts::find()
+    ->Select(["id,concat(code,' ',slug) as name"])
+    ->alias('t')
+    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['parent_id'=>13363])->asArray()->all(),'id', 'name');
+
+Yii::debug($accountdataingresos);
 $listpr=ArrayHelper::map($model2,"name","name");
 ?>
 
@@ -57,12 +63,31 @@ $listpr=ArrayHelper::map($model2,"name","name");
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-6 col-sm-6 col-md-6 col-12 ">
+                    <?=HTML::tag("label","Ingresos")?>
+                    <?=
+                    Select2::widget([
+                        'model' => $model,
+                        'attribute' => 'charingresos',
+                        'id' => 'accountingresos',
+                        'name' => 'accountingresos',
+                        'data' => $accountdataingresos ,
+                        'options' => [
+                            'placeholder' => 'Seleccione una cuenta contable',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                    ]);
+                    ?>
+                    <br>
+                    <br>
                     <?=HTML::tag("label","Activos")?>
+
                     <?=
                     Select2::widget([
                         'model' => $model,
                         'attribute' => 'chairaccount_id',
-                        'id' => 'account',
+                        'id' => 'accountd',
                         'name' => 'account_data',
                         'data' => $accountdata,
                         'options' => [
@@ -103,9 +128,10 @@ $listpr=ArrayHelper::map($model2,"name","name");
                 $js="$('#listpr').change(function(){
                         console.log($(this).val());
                       c=$(this).val();
+                       $('#accountingresos').select2().next().hide();
                       if(c=='servicio'){
                       $('#listpro').val('0');
-                           
+                          
                       }
                       if(c=='producto'){
                        $('#listpro').val('');

@@ -95,6 +95,7 @@ public function actionIndex(){
                 $facturafin->subtotal = $d["subtotal"];
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
+            $facturafin->iva = $d["iva"];
                 $facturafin->id_head = $model->n_documentos;
                 $facturafin->save();
 
@@ -155,13 +156,6 @@ public function actionIndex(){
                                 }
                                 $gr = rand(1, 100090000);
                                 if ($fr == "producto") {
-                                    $bodyf=FacturaBody::find()->where(['id_head'=>$model->n_documentos])->all();
-                                    $sum=0;
-                                    foreach ($bodyf as $bod){
-                                        $cos=Product::findOne(["id"=>$bod->id_producto]);
-                                        Yii::debug($cos);
-                                        $sum=$sum+(($cos->costo)*($bod->cant));
-                                    }
                                     $accounting_sea = new AccountingSeats;
                                     $accounting_sea->id = $gr;
                                     $accounting_sea->institution_id = $id_ins;
@@ -169,26 +163,40 @@ public function actionIndex(){
                                     $accounting_sea->nodeductible = $nodeductible;
                                     $accounting_sea->status = $status;
                                     if ($accounting_sea->save()) {
-                                        $debe = 13390;
-                                        $haber = 13148;
+                                        $bodyf=FacturaBody::find()->where(['id_head'=>$model->n_documentos])->all();
+                                        $sum=0;
+                                        $debe=array();
+                                        $haber=array();
+                                        $suma=array();
+                                        foreach ($bodyf as $bod){
+                                            $cos=Product::findOne(["id"=>$bod->id_producto]);
+                                            Yii::debug($cos);
+                                            $sum=$sum+(($cos->costo)*($bod->cant));
+                                            $debe[]=$cos->chairaccount_id;
+                                            $haber[]=$cos->Chairinve;
+                                            $suma[]=$sum;
+                                            yii::debug($suma);
+                                        }
                                         $pro = Yii::$app->request->post("Product");
-
-                                        $accounting_seats_details = new AccountingSeatsDetails;
-                                        $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
-                                        $accounting_seats_details->chart_account_id = $debe;
-                                        $accounting_seats_details->debit = $sum;
-                                        $accounting_seats_details->credit = 0;
-                                        $accounting_seats_details->cost_center_id = 1;
-                                        $accounting_seats_details->status = true;
-                                        $accounting_seats_details->save();
-                                        $accounting_seats_details = new AccountingSeatsDetails;
-                                        $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
-                                        $accounting_seats_details->chart_account_id = $haber;
-                                        $accounting_seats_details->debit = 0;
-                                        $accounting_seats_details->credit = $sum;
-                                        $accounting_seats_details->cost_center_id = 1;
-                                        $accounting_seats_details->status = true;
-                                        $accounting_seats_details->save();
+                                        for($i=0;$i<count($debe);$i++) {
+                                            $accounting_seats_details = new AccountingSeatsDetails;
+                                            $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
+                                            $accounting_seats_details->chart_account_id = $debe[$i];
+                                            yii::debug($debe[$i]);
+                                            $accounting_seats_details->debit = $suma[$i];
+                                            $accounting_seats_details->credit = 0;
+                                            $accounting_seats_details->cost_center_id = 1;
+                                            $accounting_seats_details->status = true;
+                                            $accounting_seats_details->save();
+                                            $accounting_seats_details = new AccountingSeatsDetails;
+                                            $accounting_seats_details->accounting_seat_id = $accounting_sea->id;
+                                            $accounting_seats_details->chart_account_id = $haber[$i];
+                                            $accounting_seats_details->debit = 0;
+                                            $accounting_seats_details->credit = $suma[$i];
+                                            $accounting_seats_details->cost_center_id = 1;
+                                            $accounting_seats_details->status = true;
+                                            $accounting_seats_details->save();
+                                        }
                                     }
                                 }
 
@@ -200,6 +208,8 @@ public function actionIndex(){
                     else{
                         if($tipo=="Proveedor"){
                             $accounting_seats=new AccountingSeats;
+
+
                             $h = rand(1, 10000000);
                             $ch1 = Providers::findOne(['person_id' => $model->id_personas]);
                             $accou_c = $ch1->paid_chart_account_id;
@@ -215,14 +225,37 @@ public function actionIndex(){
                             $accounting_seats->nodeductible = $nodeductible;
                             $accounting_seats->status = $status;
                             if ($accounting_seats->save()) {
-                                $debea= [13148, 13161];
+                                $bodyf=FacturaBody::find()->where(['id_head'=>$model->n_documentos])->all();
+                                $sum=0;
+                                $debe=array();
+                                $haber=array();
+                                $suma=array();
+                                foreach ($bodyf as $bod){
+                                    $cos=Product::findOne(["id"=>$bod->id_producto]);
+
+                                    $sum=$sum+($bod->total);
+                                    $debea[]=$cos->Chairinve;
+                                    $suma[]=$bod->total;
+                                    yii::debug($suma);
+                                }
+
+                                $debea[]= 13161;
                                 $habera = $accou_c;
-                                $value = [$debea[0] => $facturafin->subtotal, $debea[1] => $facturafin->iva];
+                                $i=count($debea);
+                                $value = [$debea[$i] => $facturafin->iva];
+                                $count=0;
                                 foreach ($debea as $debea) {
                                     $accounting_seats_details = new AccountingSeatsDetails;
                                     $accounting_seats_details->accounting_seat_id = $accounting_seats->id;
                                     $accounting_seats_details->chart_account_id = $debea;
-                                    $accounting_seats_details->debit = $value[$debea];
+                                    $count=$count+1;
+                                    if($count==$i){
+                                        $accounting_seats_details->debit = $value[$debea];
+                                    }
+                                    else{
+                                        $accounting_seats_details->debit = $suma;
+                                    }
+
                                     $accounting_seats_details->credit = 0;
                                     $accounting_seats_details->cost_center_id = 1;
                                     $accounting_seats_details->status = true;
@@ -256,7 +289,7 @@ public function actionIndex(){
 
 
             return $this->render('factura', [
-                'model' => $model, 's' => False, "ven" => $persona, "model2" => $model2, "produc" => $pro, "pro2" => $precio, 'model3' => $facturafin,'query'=>$query,'proser'=>$proser,'precioser'=>$precioser,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
+                'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "pro2" => $precio, 'model3' => $facturafin,'query'=>$query,'proser'=>$proser,'precioser'=>$precioser,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
 
             ]);
         }
