@@ -122,16 +122,8 @@ public function actionIndex(){
 
 
                             if ($model_tip->load(Yii::$app->request->post())) {
-                                $fr = $model_tip["name"];
-                                Yii::debug($fr);
-                                if ($fr == "servicio") {
-                                    $habera = [13272, 13365];
-                                }
 
-                                if ($fr == "producto") {
-                                    $habera = [13272, 13364];
-                                }
-                                Yii::debug($habera);
+
 
 
                                 $value = [$habera[0] => $facturafin->iva, $habera[1] => $facturafin->subtotal];
@@ -233,33 +225,45 @@ public function actionIndex(){
                                 foreach ($bodyf as $bod){
                                     $cos=Product::findOne(["id"=>$bod->id_producto]);
 
-                                    $sum=$sum+($bod->total);
+                                    $sum=$sum+($bod->precio_total);
                                     $debea[]=$cos->Chairinve;
-                                    $suma[]=$bod->total;
+                                    $suma[]=$bod->precio_total;
                                     yii::debug($suma);
                                 }
 
                                 $debea[]= 13161;
                                 $habera = $accou_c;
                                 $i=count($debea);
-                                $value = [$debea[$i] => $facturafin->iva];
+
+                                 $facturafin->iva;
                                 $count=0;
-                                foreach ($debea as $debea) {
-                                    $accounting_seats_details = new AccountingSeatsDetails;
-                                    $accounting_seats_details->accounting_seat_id = $accounting_seats->id;
-                                    $accounting_seats_details->chart_account_id = $debea;
-                                    $count=$count+1;
-                                    if($count==$i){
-                                        $accounting_seats_details->debit = $value[$debea];
+                                foreach ($debea as $debe) {
+
+                                    if($count<$i-1){
+                                        $accounting_seats_details = new AccountingSeatsDetails;
+                                        $accounting_seats_details->accounting_seat_id = $accounting_seats->id;
+                                        $accounting_seats_details->chart_account_id = $debe;
+                                        $accounting_seats_details->debit = $suma[$count];
+                                        $accounting_seats_details->credit = 0;
+                                        $accounting_seats_details->cost_center_id = 1;
+                                        $accounting_seats_details->status = true;
+                                        $accounting_seats_details->save();
+
+                                        yii::debug($suma);
                                     }
                                     else{
-                                        $accounting_seats_details->debit = $suma;
+                                        $accounting_seats_details = new AccountingSeatsDetails;
+                                        $accounting_seats_details->accounting_seat_id = $accounting_seats->id;
+                                        $accounting_seats_details->chart_account_id = $debe;
+                                        $accounting_seats_details->debit = $facturafin->iva;
+                                        $accounting_seats_details->credit = 0;
+                                        $accounting_seats_details->cost_center_id = 1;
+                                        $accounting_seats_details->status = true;
+                                        $accounting_seats_details->save();
+                                        yii::debug("aqui");
                                     }
+                                    $count=$count+1;
 
-                                    $accounting_seats_details->credit = 0;
-                                    $accounting_seats_details->cost_center_id = 1;
-                                    $accounting_seats_details->status = true;
-                                    $accounting_seats_details->save();
                                 }
                                 $accounting_seats_details = new AccountingSeatsDetails;
                                 $accounting_seats_details->accounting_seat_id = $accounting_seats->id;
@@ -364,6 +368,37 @@ else{
 
         $this->render("guardarproceso");
     }
+    public function actionPdf($id){
+        $modelhead=New HeadFact;
+        $modelbody=New FacturaBody;
+        $modelfin=New Facturafin;
+        $persona=New Person;
 
+
+        $id=$_GET["id"];
+        $model1=$modelhead::findOne($id);
+        $model2=$modelbody::find()->where(["id_head"=>$id])->all();
+        $model3=$modelfin::findOne(["id_head"=>$id]);
+        $persona=$persona::findOne(["id"=>$model1->id_personas]);
+        $content = $this->renderPartial('pdfview', [
+            'model' => $model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona
+
+        ]);
+        $pdf = new \kartik\mpdf\Pdf([
+            'mode' => \kartik\mpdf\Pdf::MODE_UTF8, // leaner size using standard fonts
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => [
+                'title' => 'Factuur',
+                'subject' => 'Generating PDF files via yii2-mpdf extension has never been easy'
+            ],
+            'methods' => [
+                'SetHeader' => ['Factura '],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
+    }
 
 }

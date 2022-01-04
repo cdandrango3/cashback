@@ -40,7 +40,6 @@ class Product extends \yii\db\ActiveRecord
         return [
             [['name', 'product_type_id', 'product_iva_id'], 'required'],
             [['status'], 'boolean'],
-            [['product_type_id', 'chairaccount_id', 'Chairinve', 'charingresos'], 'required'],
             [['product_type_id', 'chairaccount_id', 'Chairinve', 'charingresos'], 'integer'],
             [['product_iva_id', 'precio', 'costo'], 'number'],
             [['name', 'brand'], 'string', 'max' => 250],

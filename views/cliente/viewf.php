@@ -11,8 +11,10 @@ $this->registerCss(".su { margin: 10px; float:right; }");
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-6"></div>
-        <div class="col-6">
+        <div class="col-8">
+            <?= HTML::a("A pdf",Url::to(['cliente/pdf', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
+        </div>
+        <div class="col-4">
             <?= HTML::a("Registro de cobros",Url::to(['cobros/cobros', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
 
         </div>

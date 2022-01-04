@@ -128,13 +128,14 @@ $listpr=ArrayHelper::map($model2,"name","name");
                 $js="$('#listpr').change(function(){
                         console.log($(this).val());
                       c=$(this).val();
-                       $('#accountingresos').select2().next().hide();
+                      
                       if(c=='servicio'){
+                      $
                       $('#listpro').val('0');
                           
                       }
                       if(c=='producto'){
-                       $('#listpro').val('');
+                       $();
                       $('#listpro').attr({
                       
                       });
