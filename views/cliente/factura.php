@@ -15,16 +15,13 @@ use yii\widgets\ActiveForm;
 /* @var $form ActiveForm */
 $listData=ArrayHelper::map($ven,"name","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
-$listPrecio=ArrayHelper::map($pro2,"name","precio");
-$listcosto=ArrayHelper::map($pro2,"name","costo");
-$listService=ArrayHelper::map($proser,"name","precio");
-$listServicepre=ArrayHelper::map($precioser,"name","precio");
+$listPrecio=ArrayHelper::map($precio,"name","precio");
+$listcosto=ArrayHelper::map($precio,"name","costo");
 $phpvar="s";
 print_r($phpvar);
 $listtypepro=ArrayHelper::map($modeltype,"name","name");
 $listruc=ArrayHelper::map($query,"id","id");
 $prelist=\yii\helpers\Json::encode($listPrecio);
-$listse=\yii\helpers\Json::encode($listService);
 $prolist=\yii\helpers\Json::encode($listProduct);
 $lcosto=\yii\helpers\Json::encode($listcosto);
 $authItemChild = Yii::$app->request->post('Person');
@@ -50,7 +47,7 @@ $request=Yii::$app->request->post('FacturaBody');
 
             <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...',"id"=>"vendedor"])->label("vendedor");?>
             <?= $form->field($model, 'Entregado')->checkBox(['label' => 'entregado']);  ?>
-            <?=$form->field($modeltype[0],"name")->dropDownList($listtypepro,['prompt'=>'Select...','id'=>'listtype'])->label("tipo venta");?>
+
         </div>
 
         <div class="col-6">
@@ -82,6 +79,7 @@ $request=Yii::$app->request->post('FacturaBody');
     <th> Valor unitario </th>
     <th> Descuento</th>
     <th> Valor final </th>
+    <th> Eliminar </th>
     </thead>
     <tbody id="nuevo">
 
@@ -176,35 +174,21 @@ Modal::end();
     })
     $('#listtype').change(function(){
         c=$(this).val();
-        if(c=='servicio'){
-            pro='<?php echo $listse ?>'
-            dapro=JSON.parse(pro)
-            $('.s').remove();
-            for(i in dapro){
-                var c='<option class="s" value="'+i+'">"'+i+'"</option>'
-                $('.la').append(c);
-            }
-        }
-        else {
+
             pro = '<?php echo $prolist ?>'
             dapro = JSON.parse(pro)
             $('.s').remove();
             for (i in dapro) {
                 var c = '<option class="s" value="' + i + '">"' + i + '"</option>'
                 $('.la').append(c);
-            }
+
         }
         })
 $(añadir).click(function(){
 count=count+1
- f=document.getElementById('listtype').value
-  if(f=='servicio'){
-      pro='<?php echo $listse ?>'
-      cov=[];
-  }
-  else{
+
       pro='<?php echo $prolist ?>'
-  }
+
 
     dapro=JSON.parse(pro)
      var c='<tr id="int'+count+'">'
@@ -227,7 +211,8 @@ count=count+1
     c+='<td>'
     c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
     c+='</td>'
-    c+='<button class="btn btn-danger mt-3 remove" id="'+count+'">Eliminar</button>'
+    c+='<td>'
+    c+='<button class="btn btn-danger mdwsdsdsft-3 remove" id="'+count+'">Eliminar</button>'
     c+='</td>'
     c+='</tr>'
 
