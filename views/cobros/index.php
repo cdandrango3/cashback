@@ -3,7 +3,7 @@
 ?>
 <?php use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-$this->title = 'Registrar Cobro';
+$this->title = 'Registrar Cobro/Pagos';
 $this->params['breadcrumbs'][] = $this->title;
 $form=ActiveForm::begin()?>
 <div class="card">

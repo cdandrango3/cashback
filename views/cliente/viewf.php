@@ -15,8 +15,11 @@ $this->registerCss(".su { margin: 10px; float:right; }");
             <?= HTML::a("A pdf",Url::to(['cliente/pdf', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
         </div>
         <div class="col-4">
-            <?= HTML::a("Registro de cobros",Url::to(['cobros/cobros', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
-
+            <?php if($model->tipo_de_documento=="Cliente"){?>
+            <?=   HTML::a("Registro de cobros", Url::to(['cobros/cobros', 'id' => $model->n_documentos]), ['class' => 'btn btn-primary m-5 float-right']);?>
+            <?php }else{?>
+            <?= HTML::a("Registro de pagos",Url::to(['cobros/cobros', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
+            <?php }?>
         </div>
     </div>
 </div>
@@ -79,7 +82,7 @@ $this->registerCss(".su { margin: 10px; float:right; }");
         </div>
         <div class="col-5">
             <div class="card p-2">
-                <strong>Subtotal:   </strong>  <div class="su"><?=$modelfin->subtotal?></div>
+                <strong>Subtotal:   </strong>  <div class="su"><?=$modelfin->subtotal12?></div>
                 <strong>Iva: </strong>  <div class="su"> <?=$modelfin->iva ?></div>
                 <strong>Total: </strong>  <div class="su"><?=$modelfin->iva ?><?=$modelfin->total ?></div>
             </div>

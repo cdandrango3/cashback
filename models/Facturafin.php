@@ -9,10 +9,11 @@ use Yii;
  *
  * @property int $id
  * @property float|null $total
- * @property float|null $subtotal
+ * @property float|null $subtotal12
  * @property int|null $descuento
  * @property string $id_head
  * @property float|null $iva
+ * @property float|null $subtotal0
  *
  * @property HeadFact $head
  */
@@ -32,7 +33,7 @@ class Facturafin extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['total', 'subtotal', 'iva'], 'number'],
+            [['total', 'subtotal12', 'iva', 'subtotal0'], 'number'],
             [['descuento'], 'default', 'value' => null],
             [['descuento'], 'integer'],
             [['id_head'], 'required'],
@@ -50,10 +51,11 @@ class Facturafin extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'total' => 'Total',
-            'subtotal' => 'Subtotal',
+            'subtotal12' => 'Subtotal12',
             'descuento' => 'Descuento',
             'id_head' => 'Id Head',
             'iva' => 'Iva',
+            'subtotal0' => 'subtotal0',
         ];
     }
 

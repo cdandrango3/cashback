@@ -63,6 +63,7 @@ $listpr=ArrayHelper::map($model2,"name","name");
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-6 col-sm-6 col-md-6 col-12 ">
+
                     <?=HTML::tag("label","Ingresos")?>
                     <?=
                     Select2::widget([
@@ -79,6 +80,9 @@ $listpr=ArrayHelper::map($model2,"name","name");
                         ],
                     ]);
                     ?>
+
+
+
                     <br>
                     <br>
                     <?=HTML::tag("label","Activos")?>
@@ -100,23 +104,25 @@ $listpr=ArrayHelper::map($model2,"name","name");
                     ?>
                     <br>
                     <br>
+                    <div class="inve">
                     <?=HTML::tag("label","Inventarios")?>
                     <?=
 
                     Select2::widget([
                         'model' => $model,
                         'attribute' => 'Chairinve',
-                        'id' => 'account',
                         'name' => 'accountive',
                         'data' => $accountdata,
                         'options' => [
                             'placeholder' => 'Seleccione una cuenta contable',
+                            'id' => 'account'
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
                         ],
                     ]);
                     ?>
+                    </div>
                 </div>
                 </div>
             </div>
@@ -126,16 +132,17 @@ $listpr=ArrayHelper::map($model2,"name","name");
         </div>
                 <?=
                 $js="$('#listpr').change(function(){
-                        console.log($(this).val());
+                        
                       c=$(this).val();
                       
                       if(c=='servicio'){
-                      $
+                      $('#account').parent().hide();
                       $('#listpro').val('0');
                           
                       }
                       if(c=='producto'){
-                       $();
+                       $('#account').parent().show();
+                       $('#account').show();
                       $('#listpro').attr({
                       
                       });

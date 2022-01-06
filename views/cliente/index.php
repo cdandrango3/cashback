@@ -9,6 +9,8 @@ use yii\widgets\LinkPager;
 
 /* @var $modelhead app\models\head_fact*/
 $f=New Facturafin;
+$this->title = 'Consultar Documento Fisico';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php
 echo HTML::a('crear factura',['cliente/factura'],['class'=>['btn btn-success float-right']]);
@@ -52,7 +54,7 @@ echo HTML::a('crear factura',['cliente/factura'],['class'=>['btn btn-success flo
     <td>
         <?= HTML::a("fac" .  $fac->n_documentos,Url::to(['cliente/viewf', 'id' => $fac->n_documentos]))?></td>
     <td>
-         <?= $total->subtotal?>
+         <?= $total->subtotal12?>
     </td>
     <td><?= $total->iva?></td>
     <td><?= $total->total?></td>

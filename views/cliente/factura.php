@@ -16,6 +16,8 @@ use yii\widgets\ActiveForm;
 $listData=ArrayHelper::map($ven,"name","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($precio,"name","precio");
+$listIva=ArrayHelper::map($precio,"name","product_iva_id");
+yii::debug($listIva);
 $listcosto=ArrayHelper::map($precio,"name","costo");
 $phpvar="s";
 print_r($phpvar);
@@ -24,6 +26,7 @@ $listruc=ArrayHelper::map($query,"id","id");
 $prelist=\yii\helpers\Json::encode($listPrecio);
 $prolist=\yii\helpers\Json::encode($listProduct);
 $lcosto=\yii\helpers\Json::encode($listcosto);
+$liva=\yii\helpers\Json::encode($listIva);
 $authItemChild = Yii::$app->request->post('Person');
 $auth = Yii::$app->request->post('HeadFact');
 $request=Yii::$app->request->post('FacturaBody');
@@ -92,7 +95,8 @@ $request=Yii::$app->request->post('FacturaBody');
     </div>
     <div class="col-5">
         <?= $form->field($produ, 'costo')->label("subtotal")->textInput(['value' =>"" ,"id"=>"pre",'type'=>"hidden"]) ?>
-        <td><?= $form->field($model3, 'subtotal')->label("subtotal")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"sub"]) ?></td>
+        <td><?= $form->field($model3, 'subtotal12')->label("subtotal 12%")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"sub"]) ?></td>
+        <td><?= $form->field($model3, 'subtotal0')->label("subtotal 0%")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"sub0"]) ?></td>
         <td><?= $form->field($model3, 'descuento')->label("descuento")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"desc"]) ?></td>
         <td><?= $form->field($model3, 'iva')->label("iva")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"iva"]) ?></td>
         <td><?= $form->field($model3, 'total')->label("total")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"total"]) ?></td>
@@ -229,19 +233,37 @@ count=count+1
 
 
         $("#int"+id).remove();
-        $('.g').each(function(){
-            sum=sum+parseFloat($(this).val());
-            c = cov.splice(1,id)
-            console.log(c)
+        sum=0;
+        c=0;
+        sumiv=0;
+        sumn=0;
+        iva=JSON.parse('<?php echo $liva?>');
+        item=[];
+        $('.la').each(function(){
+            item.push($(this).val())
         })
-        $('#sub').val(sum)
-        iva=sum*0.12;
+        console.log(item[0]);
+        $('.g').each(function(){
+
+            console.log(c)
+            if(iva[item[c]]==12){
+                sumiv=sumiv+parseFloat($(this).val());
+            }
+            if(iva[item[c]]==0){
+                sumn=sumn+parseFloat($(this).val());
+            }
+            c=c+1;
+        })
+        $('#sub0').val(sumn)
+        $('#sub').val(sumiv)
+        console.log(sumn);
+        console.log(sumiv);
+        iva=sumiv*0.12;
         des=0;
-        total=sum+iva+des;
+        total=sumiv+sumn+iva+des;
         $('#iva').val(iva)
         $('#des').val(iva)
         $('#total').val(total)
-        sum=0;
     })
 
     $('#nuevo').append(c);
@@ -296,6 +318,7 @@ function calcular(){
     console.log(cov)
     for (const element of cov){
         suma=suma+parseFloat(element)
+        cost=JSON.parse('<?php echo $lcosto?>');
     }
     console.log(suma)
     $('#pre').val(suma)
@@ -303,15 +326,33 @@ function calcular(){
     $('#valtotal'+h).val(re);
     console.log(cost)
     sum=0;
-    $('.g').each(function(){
-        sum=sum+parseFloat($(this).val());
-
+    c=0;
+    sumiv=0;
+    sumn=0;
+    iva=JSON.parse('<?php echo $liva?>');
+    item=[];
+    $('.la').each(function(){
+        item.push($(this).val())
     })
-    $('')
-    $('#sub').val(sum)
-    iva=sum*0.12;
+    console.log(item[0]);
+    $('.g').each(function(){
+
+        console.log(c)
+        if(iva[item[c]]==12){
+            sumiv=sumiv+parseFloat($(this).val());
+        }
+        if(iva[item[c]]==0){
+            sumn=sumn+parseFloat($(this).val());
+        }
+        c=c+1;
+    })
+    $('#sub0').val(sumn)
+    $('#sub').val(sumiv)
+    console.log(sumn);
+    console.log(sumiv);
+    iva=sumiv*0.12;
     des=0;
-    total=sum+iva+des;
+    total=sumiv+sumn+iva+des;
     $('#iva').val(iva)
     $('#des').val(iva)
     $('#total').val(total)
@@ -356,6 +397,7 @@ function calcular(){
         $('#valtotal'+h).val(re);
         console.log(cost)
         sum=0;
+
         $('.g').each(function(){
             sum=sum+parseFloat($(this).val());
 
@@ -384,8 +426,10 @@ function calcular(){
         $('#valtotal'+h).val(valf);
 
         sum=0;
+
         $('.g').each(function(){
             sum=sum+parseFloat($(this).val());
+
 
         })
         $('')

@@ -25,11 +25,20 @@ class ClienteController extends controller
 {
     public $id;
     public $id_product;
-public function actionIndex(){
+public function actionIndex($tipos){
     $models=New clients;
     $modelhead=New HeadFact;
     $modelf=New Facturafin;
-    $query1 = HeadFact::find();
+    if($tipos=="Cliente"){
+        $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Cliente"]);
+    }
+    else{
+        if ($tipos=="Proveedor") {
+            $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Proveedor"]);
+        }
+
+    }
+
     Yii::debug($query1);
     $pages = new Pagination(['defaultPageSize' => 5,'totalCount' => $query1->count()]);
     $modelhe = $query1->offset($pages->offset)
@@ -89,7 +98,7 @@ public function actionIndex(){
                 $c = rand(1, 100090000);
                 $this->id=$c;
                 $facturafin->id = $c;
-                $facturafin->subtotal = $d["subtotal"];
+                $facturafin->subtotal12 = $d["subtotal12"];
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
             $facturafin->iva = $d["iva"];
@@ -258,11 +267,16 @@ public function actionIndex(){
                                 $sum=0;
                                 $haber=array();
                                 $suma=array();
-                                foreach ($bodyf as $bod){
-                                    $cos=Product::findOne(["id"=>$bod->id_producto]);
-
-                                    $sum=$sum+($bod->precio_total);
-                                    $debea[]=$cos->Chairinve;
+                                foreach ($bodyf as $bod) {
+                                    $cos = Product::findOne(["id" => $bod->id_producto]);
+                                    $sum = $sum + ($bod->precio_total);
+                                    if ($cos->product_type_id == 1) {
+                                        $debea[] = $cos->Chairinve;
+                                    } else {
+                                        if ($cos->product_type_id == 2){
+                                            $debea[] = $cos->chairaccount_id;
+                                        }
+                                }
                                     $suma[]=$bod->precio_total;
                                     yii::debug($suma);
                                 }

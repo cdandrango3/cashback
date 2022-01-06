@@ -57,7 +57,7 @@ $producto=New Product;
 <div class="container">
         <div class="">
 
-                <strong>Subtotal:   </strong>  <div class="su"><?=$modelfin->subtotal?></div>
+                <strong>Subtotal:   </strong>  <div class="su"><?=$modelfin->subtotal12?></div>
                 <strong>Iva: </strong>  <div class="su"> <?=$modelfin->iva ?></div>
                 <strong>Total: </strong>  <div class="su"><?=$modelfin->iva ?><?=$modelfin->total ?></div>
 

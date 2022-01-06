@@ -111,7 +111,7 @@ use yii\helpers\Url;
 
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="<?= Url::to(['cliente/index'], $schema = true) ?>" class="nav-link">
+                                <a href="<?= Url::to(['cliente/index', 'tipos' => "Cliente"]) ?>" class="nav-link">
                                     <p>Clientes</p>
                                 </a>
                             </li>
@@ -119,7 +119,7 @@ use yii\helpers\Url;
 
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="<?= Url::to(['cliente/index', 'tipos' => "Proveedor"]) ?>" class="nav-link">
                                     <p>Proveedores</p>
                                 </a>
                             </li>
