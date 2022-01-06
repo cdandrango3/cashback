@@ -118,6 +118,7 @@ public function actionIndex($tipos){
                         $status = True;
                         $h = rand(1, 10000000);
                         $accounting_seats->id = $h;
+                        $accounting_seats->head_fact = $model->n_documentos;
                         $accounting_seats->institution_id = $id_ins;
                         $accounting_seats->description = $descripcion;
                         $accounting_seats->nodeductible = $nodeductible;
@@ -208,6 +209,7 @@ public function actionIndex($tipos){
                             }
                             if(count($haber)!=0) {
                                 $accounting_sea = new AccountingSeats;
+                                $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
                                 $accounting_sea->institution_id = $id_ins;
                                 $accounting_sea->description = "fact2";
@@ -257,6 +259,7 @@ public function actionIndex($tipos){
                             $descripcion = "fact1";
                             $nodeductible = True;
                             $status = True;
+                            $accounting_seats->head_fact = $model->n_documentos;
                             $accounting_seats->id = $h;
                             $accounting_seats->institution_id = $id_ins;
                             $accounting_seats->description = $descripcion;
@@ -430,8 +433,10 @@ else{
         $model2=$modelbody::find()->where(["id_head"=>$id])->all();
         $model3=$modelfin::findOne(["id_head"=>$id]);
         $persona=$persona::findOne(["id"=>$model1->id_personas]);
+        $modelo= AccountingSeats::find()->where(["head_fact"=>$id])->all();
+
         $content = $this->renderPartial('pdfview', [
-            'model' => $model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona
+            'model' => $model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona,"modelas"=>$modelo
 
         ]);
         $pdf = new \kartik\mpdf\Pdf([

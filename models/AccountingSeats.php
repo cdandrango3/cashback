@@ -13,6 +13,7 @@ use Yii;
  * @property string $description
  * @property bool|null $nodeductible
  * @property bool $status
+ * @property int|null $head_fact
  */
 class AccountingSeats extends \yii\db\ActiveRecord
 {
@@ -31,8 +32,8 @@ class AccountingSeats extends \yii\db\ActiveRecord
     {
         return [
             [['id', 'institution_id', 'description'], 'required'],
-            [['id', 'institution_id'], 'default', 'value' => null],
-            [['id', 'institution_id'], 'integer'],
+            [['id', 'institution_id', 'head_fact'], 'default', 'value' => null],
+            [['id', 'institution_id', 'head_fact'], 'integer'],
             [['date'], 'safe'],
             [['description'], 'string'],
             [['nodeductible', 'status'], 'boolean'],
@@ -52,7 +53,7 @@ class AccountingSeats extends \yii\db\ActiveRecord
             'description' => 'Description',
             'nodeductible' => 'Nodeductible',
             'status' => 'Status',
+            'head_fact' => 'Head Fact',
         ];
     }
-
 }

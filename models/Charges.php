@@ -15,9 +15,10 @@ use Yii;
  * @property float|null $amount
  * @property bool|null $status
  * @property string|null $n_document
- * @property string $date
+ * @property string|null $date
  * @property string|null $comprobante
  * @property string|null $Description
+ * @property string|null $type_transaccion
  *
  * @property HeadFact $nDocument
  * @property Person $person
@@ -38,9 +39,10 @@ class Charges extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date'], 'required'],
+            [['id'], 'required'],
             [['id', 'person_id'], 'default', 'value' => null],
-            [['type_charge', 'n_document', 'comprobante', 'Description'], 'string'],
+            [['id', 'person_id'], 'integer'],
+            [['type_charge', 'n_document', 'comprobante', 'Description', 'type_transaccion'], 'string'],
             [['saldo', 'balance', 'amount'], 'number'],
             [['status'], 'boolean'],
             [['date'], 'safe'],
@@ -67,6 +69,7 @@ class Charges extends \yii\db\ActiveRecord
             'date' => 'Date',
             'comprobante' => 'Comprobante',
             'Description' => 'Description',
+            'type_transaccion' => 'Type Transaccion',
         ];
     }
 

@@ -14,10 +14,22 @@ $form=ActiveForm::begin()?>
     <div class="card-body">
         <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-10 col-12">
-<?= $form->field($chargem, 'type_charge')->dropDownList(
-    ['Caja' => 'Caja', 'Transferencia' => 'Transferencia','Cheque' => 'Cheque'], ["id" => "tipodocu"])->label("Forma de Cobro")  ?>
-<?=
-$form->field($chargem,'date')->textInput(["readonly"=>True,"value"=>$header->f_timestamp])->label("Fecha");
+<?php
+if($header->tipo_de_documento=="Cliente"){
+    $val="Cobro";
+}
+else{
+    $val="Pago";
+}
+?>
+
+<?= $form->field($chargem, 'type_transaccion')->textInput(["readonly"=>True,"value"=>$val])->label("Tipo de Transacción"); ?>
+                <?= $form->field($chargem, 'type_charge')->dropDownList(
+                    ['Caja' => 'Caja', 'Transferencia' => 'Transferencia','Cheque' => 'Cheque'], ["id" => "tipodocu"])->label("Forma de Cobro")  ?>
+
+
+  <?=
+$form->field($chargem,'date')->textInput(["readonly"=>True,"value"=> $header->f_timestamp])->label("Fecha");
 ?>
 <?=
 $form->field($Person,'name')->textInput(["readonly"=>True,"value"=>$Person->name])->label("Persona");

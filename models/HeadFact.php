@@ -17,8 +17,8 @@ use Yii;
  * @property string|null $tipo_de_documento
  * @property int|null $id_saleman
  *
- * @property FacturaBody[] $facturaBodies
- * @property Facturafin[] $facturafins
+ * @property Charges[] $charges
+ * @property Facturafin $facturafin
  * @property Person $personas
  * @property Salesman $saleman
  */
@@ -69,23 +69,23 @@ class HeadFact extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[FacturaBodies]].
+     * Gets query for [[Charges]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getFacturaBodies()
+    public function getCharges()
     {
-        return $this->hasMany(FacturaBody::className(), ['id_head' => 'n_documentos']);
+        return $this->hasMany(Charges::className(), ['n_document' => 'n_documentos']);
     }
 
     /**
-     * Gets query for [[Facturafins]].
+     * Gets query for [[Facturafin]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getFacturafins()
+    public function getFacturafin()
     {
-        return $this->hasMany(Facturafin::className(), ['id_head' => 'n_documentos']);
+        return $this->hasOne(Facturafin::className(), ['id_head' => 'n_documentos']);
     }
 
     /**
