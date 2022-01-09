@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->registerJsFile('@web/js/accountingseats/form.js?v='.time(), ['depends' => \yii\web\JqueryAsset::className()]);
+
 
 $accountdata = ArrayHelper::map(ChartAccounts::find()
 ->Select(["id,concat(code,' ',slug) as name"])

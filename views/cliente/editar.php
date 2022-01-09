@@ -17,7 +17,9 @@ $listData=ArrayHelper::map($ven,"name","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($precio,"name","precio");
 $listIva=ArrayHelper::map($precio,"name","product_iva_id");
-yii::debug($listIva);
+$listpbody=ArrayHelper::map($dbo,"id","cant");
+$listdbo=\yii\helpers\Json::encode($dbo);
+yii::debug($listdbo);
 $listcosto=ArrayHelper::map($precio,"name","costo");
 $phpvar="s";
 print_r($phpvar);
@@ -149,11 +151,15 @@ Modal::end();
 
     $(document).ready(function(){
         $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
+
     })
     $('#buscar').click(function() {
         $('#modal').modal('show')
             .find('#modalContent')
     })
+    list=JSON.parse('<?php $listdbo?>')
+    countr=list.lenght
+
 
     $('#tipodocu').change(function(){
         tipo=$(this).val()
@@ -519,4 +525,3 @@ cantidad=[];
         return Math.round(m) / 100 * Math.sign(num);
     }
 </script>
-

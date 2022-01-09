@@ -15,11 +15,14 @@ use app\models\ProductType;
 use app\models\Providers;
 use app\models\Salesman;
 use Cassandra\Date;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\Json;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\web\Controller;
+use yii\db\Query;
 
 class ClienteController extends controller
 {
@@ -371,6 +374,52 @@ else{
     }
 }
 }
+    public function actionBuscarf($fil){
+
+
+
+
+            $nombre = $_POST['tipo'];
+        yii::debug($nombre);
+        $model2=HeadFact::find()->filterWhere(["tipo_de_documento"=>$fil])->andFilterWhere(['like', 'n_documentos', $nombre. '%' , false])->all();
+         yii::debug($model2);
+
+         foreach($model2 as $mod){
+             $total=Facturafin::findOne(['id_head'=>$mod->n_documentos]);
+        echo " <tr>
+    <td>";
+        echo HTML::a('Borrar',Url::to(['cliente/delete', 'id' => $mod->n_documentos]),['class'=>'btn btn-danger']);
+    echo "</td>";
+      echo "<td>";
+echo Yii::$app->formatter->asDate($mod->f_timestamp, 'php:Y-m-d');
+echo "</td>";
+             echo "<td>".
+        HTML::a('fac' .  $mod->n_documentos,Url::to(['cliente/viewf', 'id' => $mod->n_documentos]))."</td>
+</td>";
+             echo "<td>".
+                 $total->subtotal12.
+            "</td>";
+             echo "<td>".
+                 $total->iva.
+                 "</td>";
+             echo "<td>".
+                 $total->total.
+                 "</td>";
+
+             echo "</tr>";
+
+
+         }
+
+
+
+            echo $fil;
+
+
+        }
+
+
+
     public function actionFormclientrender(){
     $person=new Person;
     $query=$person::find()->select("ruc")->all();
@@ -455,5 +504,54 @@ else{
         ]);
         return $pdf->render();
     }
+    public function actionDelete($id){
+        $head=New HeadFact;
+        $nhe=$head::findOne($id);
+        $this->query("facturafin","id_head",$id);
+        $this->query("factura_body","id_head",$id);
+        $this->query("head_fact","n_documentos",$id);
+        $v=AccountingSeats::find()->where(["head_fact"=>$id])->all();
+        foreach($v as $ac){
+            $this->query("accounting_seats_details","accounting_seat_id",$ac->id);
+        }
+        $this->query("accounting_seats","head_fact",$id);
+         $this->redirect("index?tipos=Cliente");
+    }
+
+    public function query($query,$col,$id){
+        (new Query)
+            ->createCommand()
+            ->delete($query, [$col => $id])
+            ->execute();
+    }
+    public function actionEditar($id){
+        $model = new HeadFact;
+        $person = new Person;
+        $client=New Clients;
+        $institucion=New Institution;
+        $model_tip=New ProductType;
+        $salesman = new Salesman;
+        $model2 = new FacturaBody;
+        $productos = new Product;
+        $facturafin = new Facturafin;
+        $accounting_seats=new AccountingSeats;
+        $accounting_seats_details=New AccountingSeatsDetails;
+        $dbody=$model2::find()->where(['id_head'=>$id])->all();
+
+        $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->all();
+        $model_tipo=$model_tip::find()->select("name")->all();
+        $pro = $productos::find()->select("name")->all();
+        $precio = $productos::find()->all();
+        $precioser = $productos::find()->where(['product_type_id'=>2])->all();
+        $d= Yii::$app->request->post('Facturafin');
+        $per= Yii::$app->request->post('Person');
+        $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->all();
+        $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->all();
+
+        return $this->render('editar', [
+            'model' => $model, "dbo"=>$dbody,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
+
+        ]);
+}
 
 }

@@ -77,7 +77,7 @@ $producto=New Product;
                 <td><?= $modelo->date?></td>
             </tr>
             <tr>
-                <td><b>Códiigo:</b></td>
+                <td><b>Código:</b></td>
                 <td></td>
             </tr>
             <tr>
@@ -90,7 +90,7 @@ $producto=New Product;
             </tr>
         </table>
         <br>
-        <b><u><i> Detelle del Asiento</i><u></b>
+        <b><u><i> Detalle del Asiento</i><u></b>
         <table border="1" cellpadding="0" cellspacing="0" style="width:100%;font-family: Arial;font-size:10pt">
             <thead>
             <tr>
