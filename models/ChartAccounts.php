@@ -41,7 +41,10 @@ class ChartAccounts extends \yii\db\ActiveRecord
     {
         return 'chart_accounts';
     }
-
+    public static function primaryKey()
+    {
+        return ["id"];
+    }
     /**
      * {@inheritdoc}
      */

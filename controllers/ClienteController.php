@@ -104,7 +104,7 @@ public function actionIndex($tipos){
                 $facturafin->subtotal12 = $d["subtotal12"];
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
-            $facturafin->iva = $d["iva"];
+                $facturafin->iva = $d["iva"];
                 $facturafin->id_head = $model->n_documentos;
                 $facturafin->save();
 
@@ -481,7 +481,8 @@ echo "</td>";
             $precioto=$data['precioto'];
             $id_head=$data['ndocumento'];
             $head_anterior=$data['nant'];
-            $head_anterior=
+            $this->query("factura_body","id_head",$head_anterior);
+
             yii::debug($id_head);
             $i=count($cantidad);
             for($k=0;$k<$i;$k++){
@@ -573,10 +574,30 @@ echo "</td>";
         $pro = $productos::find()->select("name")->all();
         $precio = $productos::find()->all();
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
-        $d= Yii::$app->request->post('Facturafin');
+
         $per= Yii::$app->request->post('Person');
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->all();
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->all();
+        if($model->load(Yii::$app->request->post())) {
+            $this->query("facturafin","id_head",$_GET["id"]);
+
+            $this->query("head_fact","id_head",$_GET["id"]);
+            $d= Yii::$app->request->post('Facturafin');
+            yii::debug($d["subtotal12"]);
+            $c = rand(1, 100090000);
+            $this->id=$c;
+            $facturafin->id = $c;
+            $facturafin->subtotal12 = $d["subtotal12"];
+            $facturafin->total = $d["total"];
+            $facturafin->iva = $d["iva"];
+            $facturafin->iva = $d["iva"];
+            $facturafin->id_head = $model->n_documentos;
+            $facturafin->save();
+            return $this->render('editar', [
+                'head_fact'=>$head_fact,'model' => $model, "dbo"=>$dbody,"dfin"=>$dfin,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
+
+            ]);
+            }
 
         return $this->render('editar', [
             'head_fact'=>$head_fact,'model' => $model, "dbo"=>$dbody,"dfin"=>$dfin,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
