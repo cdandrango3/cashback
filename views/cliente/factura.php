@@ -2,6 +2,7 @@
 
 
 use app\models\Person;
+use kartik\date\DatePicker;
 use yii\Bootstrap4;
 use yii\bootstrap4\Modal;
 use yii\data\ActiveDataProvider;
@@ -45,7 +46,17 @@ $request=Yii::$app->request->post('FacturaBody');
             <div class="card-body p-4">
     <div class="row">
         <div class="col-6">
-            <?= $form->field($model, 'f_timestamp')->label("Fecha de Emision");?>
+            <?= DatePicker::widget([
+                    'model'=>$model,
+            'attribute' => 'f_timestamp',
+            'name' => 'check_issue_date',
+            'value' => date('Y-m-d'),
+            'options' => ['placeholder' => 'Select issue date ...'],
+            'pluginOptions' => [
+            'format' => 'yyyy-mm-dd',
+            'todayHighlight' => true
+            ]
+            ])?>;
             <?=$form->field($ven[0],"id")->dropDownList($listruc,['prompt'=>'Select...',"id"=>"dop1"])->label("Persona");?>
 
             <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...',"id"=>"vendedor"])->label("vendedor");?>
@@ -155,6 +166,20 @@ Modal::end();
             .find('#modalContent')
     })
 
+    $('#ndo')
+        .keypress(function (event) {
+            if (event.which < 48 || event.which > 57 || this.value.length === 17) {
+                return false;
+            }
+        });
+    var flag1 = true;
+    $('#nd').keyup(function(e){
+        if($(this).val().length == 3 || $(this).val().length == 7 && flag1) {
+            $(this).val($(this).val()+"-");
+            flag1 = true;
+        }
+    });
+
     $('#tipodocu').change(function(){
         tipo=$(this).val()
         if (tipo=="Proveedor") {
@@ -227,6 +252,7 @@ count=count+1
     $('#actionmodal').click(function(){
         $('#modal2').show()
     })
+
 $(document).on('keyup','.preu',function(){
     precio=$(this).val()
     te=$(this).attr("id");

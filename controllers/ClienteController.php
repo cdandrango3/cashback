@@ -202,8 +202,8 @@ public function actionIndex($tipos){
                                 Yii::debug($cos);
                                 if (!(is_null($cos->Chairinve))) {
                                     $sum=$sum+(($cos->costo)*($bod->cant));
-                                    $debe[]=$cos->chairaccount_id;
-                                    $haber[] = $cos->Chairinve;
+                                    $debe[]=$cos->Chairinve;
+                                    $haber[] = $cos->chairaccount_id;
                                     $suma[]=($cos->costo)*($bod->cant);
                                     yii::debug($haber);
                                 }
@@ -384,6 +384,7 @@ else{
         $model2=HeadFact::find()->filterWhere(["tipo_de_documento"=>$fil])->andFilterWhere(['like', 'n_documentos', $nombre. '%' , false])->all();
          yii::debug($model2);
 
+
          foreach($model2 as $mod){
              $total=Facturafin::findOne(['id_head'=>$mod->n_documentos]);
         echo " <tr>
@@ -470,6 +471,34 @@ echo "</td>";
 
         $this->render("guardarproceso");
     }
+    public function actionEditarproceso(){
+
+        if(Yii::$app->request->isAjax){
+            $data=Yii::$app->request->post();
+            $cantidad=$data['cantidad'];
+            $producto=$data['produc'];
+            $preciou=$data['preciou'];
+            $precioto=$data['precioto'];
+            $id_head=$data['ndocumento'];
+            $head_anterior=$data['nant'];
+            $head_anterior=
+            yii::debug($id_head);
+            $i=count($cantidad);
+            for($k=0;$k<$i;$k++){
+                $id_product=New Product;
+                $i_pro=$id_product::findOne(['name'=>$producto[$k]]);
+                $facbody=New FacturaBody;
+                $facbody->cant=$cantidad[$k];
+                $facbody->precio_u=$preciou[$k];
+                $facbody->precio_total=$precioto[$k];
+                $facbody->id_producto=$i_pro->id;
+                $facbody->id_head=$id_head;
+                $facbody->save();
+            }
+
+        }
+
+    }
     public function actionPdf($id){
         $modelhead=New HeadFact;
         $modelbody=New FacturaBody;
@@ -537,7 +566,8 @@ echo "</td>";
         $accounting_seats=new AccountingSeats;
         $accounting_seats_details=New AccountingSeatsDetails;
         $dbody=$model2::find()->where(['id_head'=>$id])->all();
-
+        $dfin=$facturafin::findOne(['id_head'=>$id]);
+        $head_fact=$model::findOne(['n_documentos'=>$id]);
         $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->all();
         $model_tipo=$model_tip::find()->select("name")->all();
         $pro = $productos::find()->select("name")->all();
@@ -549,7 +579,7 @@ echo "</td>";
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->all();
 
         return $this->render('editar', [
-            'model' => $model, "dbo"=>$dbody,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
+            'head_fact'=>$head_fact,'model' => $model, "dbo"=>$dbody,"dfin"=>$dfin,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
 
         ]);
 }

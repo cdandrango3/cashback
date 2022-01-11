@@ -36,6 +36,11 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'controllerMap' => [
+            'heroku' => [
+                'class' => 'purrweb\heroku\HerokuGeneratorController',
+            ],
+        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             // send all mails to a file by default. You have to set

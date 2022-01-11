@@ -7,6 +7,7 @@ use app\models\Person;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
 
+
 /* @var $modelhead app\models\head_fact*/
 $f=New Facturafin;
 $this->title = 'Consultar Documento Fisico';
@@ -81,7 +82,10 @@ echo HTML::a('crear factura',['cliente/factura'],['class'=>['btn btn-success flo
 </div>
 <?php
 $js = <<< JS
-    $('#clickeo').click(function(){
+$('#personas').change(function(){
+    console.log($(this).val())
+})
+    $('#nfac').keyup(function(){
         $.ajax({
               method: "POST",             
                url: '/cliente/buscarf?fil=$c',

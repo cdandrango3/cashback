@@ -17,6 +17,11 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'controllerMap' => [
+        'heroku' => [
+            'class' => 'purrweb\heroku\HerokuGeneratorController',
+        ],
+    ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -35,6 +40,7 @@ $config = [
     'modules' => [
 
     ],
+
     /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.
