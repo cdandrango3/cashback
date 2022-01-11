@@ -63,7 +63,7 @@ public function actionIndex($tipos){
 
 
     $id=$_GET["id"];
-    $model1=$modelhead::findOne($id);
+    $model1=$modelhead::findOne(["n_documentos"=>$id]);
     $model2=$modelbody::find()->where(["id_head"=>$id])->all();
     $model3=$modelfin::findOne(["id_head"=>$id]);
     $persona=$persona::findOne(["id"=>$model1->id_personas]);
@@ -104,7 +104,7 @@ public function actionIndex($tipos){
                 $facturafin->subtotal12 = $d["subtotal12"];
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
-                $facturafin->iva = $d["iva"];
+                $facturafin->descuento = $d["descuento"];
                 $facturafin->id_head = $model->n_documentos;
                 $facturafin->save();
 
@@ -508,7 +508,7 @@ echo "</td>";
 
 
         $id=$_GET["id"];
-        $model1=$modelhead::findOne($id);
+        $model1=$modelhead::findOne(["n_documentos"=>$id]);
         $model2=$modelbody::find()->where(["id_head"=>$id])->all();
         $model3=$modelfin::findOne(["id_head"=>$id]);
         $persona=$persona::findOne(["id"=>$model1->id_personas]);
@@ -579,20 +579,51 @@ echo "</td>";
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->all();
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->all();
         if($model->load(Yii::$app->request->post())) {
-            $this->query("facturafin","id_head",$_GET["id"]);
-
-            $this->query("head_fact","id_head",$_GET["id"]);
+            /* Actualiza Header */
             $d= Yii::$app->request->post('Facturafin');
             yii::debug($d["subtotal12"]);
-            $c = rand(1, 100090000);
-            $this->id=$c;
-            $facturafin->id = $c;
-            $facturafin->subtotal12 = $d["subtotal12"];
-            $facturafin->total = $d["total"];
-            $facturafin->iva = $d["iva"];
-            $facturafin->iva = $d["iva"];
-            $facturafin->id_head = $model->n_documentos;
-            $facturafin->save();
+            $fac=HeadFact::findOne(["n_documentos"=>$_GET["id"]]);
+            $fac->updateAttributes(['Entregado' => $model->Entregado]);
+            $fac->updateAttributes(['f_timestamp' => $model->f_timestamp ]);
+            $fac->updateAttributes(['n_documentos' => $model->n_documentos ]);
+            $fac->updateAttributes(['referencia' => $model->referencia ]);
+            $fac->updateAttributes(['orden_cv' => $model->orden_cv ]);
+            $fac->updateAttributes(['autorizacion' => $model->autorizacion]);
+            $fac->updateAttributes(['tipo_de_documento' => $model->tipo_de_documento]);
+/* Actualiza detalle */
+                $ac=Facturafin::findOne(["id_head"=>$_GET["id"]]);
+                $ac->updateAttributes(['total' => $d["total"]]);
+                $ac->updateAttributes(['id_head' =>  $model->n_documentos]);
+                $ac->updateAttributes(['subtotal12' => $d["subtotal12"] ]);
+                $ac->updateAttributes(['descuento' => $d["descuento"] ]);
+                $ac->updateAttributes(['subtotal0' => $d["subtotal0"] ]);
+                $ac->updateAttributes(['iva' => $d["iva"] ]);
+            /* Actualiza account seat */
+                $account=AccountingSeats::find()->where(["head_fact"=>$_GET["id"]])->all();
+                foreach($account as $aci){
+                    $aci->updateAttributes(['head_fact' => $model->n_documentos]);
+                }
+                $ch1 = $client::findOne(['person_id' => $model->id_personas]);
+               $accou_c = $ch1->chart_account_id;
+               $bodyf=FacturaBody::find()->where(['id_head'=>$model->n_documentos])->all();
+            /* obtenemos productos */
+            foreach ($bodyf as $bod){
+                $cos=Product::findOne(["id"=>$bod->id_producto]);
+                $sum=$sum+($bod->precio_total);
+                if (!(is_null($cos->charingresos))) {
+                    $haber[] = $cos->charingresos;
+                    $suma[] = $bod->precio_total;
+                }
+            }
+            if(count($haber)>0){
+                $haber[]=13272;
+                $i=count($haber);
+                $count=0;
+            }
+
+                $this->redirect("index?tipos=Cliente");
+
+
             return $this->render('editar', [
                 'head_fact'=>$head_fact,'model' => $model, "dbo"=>$dbody,"dfin"=>$dfin,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
 

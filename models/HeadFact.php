@@ -16,9 +16,8 @@ use Yii;
  * @property string|null $autorizacion
  * @property string|null $tipo_de_documento
  * @property int|null $id_saleman
+ * @property int $id
  *
- * @property Charges[] $charges
- * @property Facturafin $facturafin
  * @property Person $personas
  * @property Salesman $saleman
  */
@@ -39,12 +38,11 @@ class HeadFact extends \yii\db\ActiveRecord
     {
         return [
             [['f_timestamp'], 'safe'],
-            [['n_documentos', 'id_personas', 'orden_cv'], 'required'],
+            [['id_personas', 'orden_cv'], 'required'],
             [['id_personas', 'id_saleman'], 'default', 'value' => null],
             [['id_personas', 'id_saleman'], 'integer'],
             [['Entregado'], 'boolean'],
             [['n_documentos', 'referencia', 'orden_cv', 'autorizacion', 'tipo_de_documento'], 'string', 'max' => 50],
-            [['n_documentos'], 'unique'],
             [['id_personas'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['id_personas' => 'id']],
             [['id_saleman'], 'exist', 'skipOnError' => true, 'targetClass' => Salesman::className(), 'targetAttribute' => ['id_saleman' => 'id']],
         ];
@@ -65,27 +63,8 @@ class HeadFact extends \yii\db\ActiveRecord
             'autorizacion' => 'Autorizacion',
             'tipo_de_documento' => 'Tipo De Documento',
             'id_saleman' => 'Id Saleman',
+            'id' => 'ID',
         ];
-    }
-
-    /**
-     * Gets query for [[Charges]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCharges()
-    {
-        return $this->hasMany(Charges::className(), ['n_document' => 'n_documentos']);
-    }
-
-    /**
-     * Gets query for [[Facturafin]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFacturafin()
-    {
-        return $this->hasOne(Facturafin::className(), ['id_head' => 'n_documentos']);
     }
 
     /**

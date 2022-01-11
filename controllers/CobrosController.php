@@ -19,7 +19,7 @@ $Persona=New Person;
 $Header=New HeadFact;
 $id=$_GET['id'];
 $body=Facturafin::findOne(["id_head"=>$id]);
-$header=$Header->findOne($id);
+$header=$Header->findOne(["n_documentos"=>$id]);
 $persona=$Persona::findOne(["id"=>$header->id_personas]);
     $upt=$chargem::find()->where(["n_document"=>$header->n_documentos])->exists();
 if($chargem->load(Yii::$app->request->post())) {
