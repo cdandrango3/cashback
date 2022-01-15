@@ -33,7 +33,12 @@ $listcosto=ArrayHelper::map($precio,"name","costo");
 $phpvar="s";
 print_r($phpvar);
 $listtypepro=ArrayHelper::map($modeltype,"name","name");
-$listruc=ArrayHelper::map($query,"id","id");
+if($head_fact->tipo_de_documento=="Cliente") {
+    $listruc = ArrayHelper::map($query, "id", "id");
+}
+else{
+    $listruc = ArrayHelper::map($providers, "id", "id");
+}
 $prelist=\yii\helpers\Json::encode($listPrecio);
 $prolist=\yii\helpers\Json::encode($listProduct);
 $lcosto=\yii\helpers\Json::encode($listcosto);
@@ -70,6 +75,7 @@ $request=Yii::$app->request->post('FacturaBody');
                     'todayHighlight' => true
                 ]
             ])?>;
+
             <?=$form->field($ven[0],"id")->dropDownList($listruc,['prompt'=>'Select...',"id"=>"dop1",'options' => [$head_fact->id_personas => ['selected'=>true]]])->label("Persona");?>
 
             <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...',"id"=>"vendedor"])->label("vendedor");?>
@@ -172,12 +178,58 @@ Modal::end();
     cov=[]
 
     $(document).ready(function(){
-        $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
+        tip= $('#tipodocu').val();
+        console.log(tip)
+        if(tip=="Cliente"){
+            f=JSON.parse('<?php echo $prelist?>');
 
-    })
-    $('#buscar').click(function() {
-        $('#modal').modal('show')
-            .find('#modalContent')
+        }
+        else {
+            if (tip == "Proveedor") {
+                f = JSON.parse('<?php echo $lcosto?>');
+
+            }
+        }
+        $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
+        $(document).on('click','.remove',function(){
+            id=$(this).attr("id");
+
+
+            $("#int"+id).remove();
+            sum=0;
+            c=0;
+            sumiv=0;
+            sumn=0;
+            iva=JSON.parse('<?php echo $liva?>');
+            item=[];
+            $('.la').each(function(){
+                item.push($(this).val())
+            })
+            console.log(item[0]);
+            $('.g').each(function(){
+
+                console.log(c)
+                if(iva[item[c]]==12){
+                    sumiv=sumiv+parseFloat($(this).val());
+                }
+                if(iva[item[c]]==0){
+                    sumn=sumn+parseFloat($(this).val());
+                }
+                c=c+1;
+            })
+            $('#sub0').val(sumn)
+            $('#sub').val(sumiv)
+
+            console.log(sumn);
+            console.log(sumiv);
+            iva=sumiv*0.12;
+            des=0;
+            total=sumiv+sumn+iva+des;
+            $('#iva').val(iva)
+            $('#des').val(iva)
+            $('#total').val(total)
+        })
+
     })
     list=JSON.parse('<?php echo $listdbo?>')
     npro=JSON.parse('<?php echo $n_pro?>')

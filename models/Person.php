@@ -44,6 +44,7 @@ class Person extends \yii\db\ActiveRecord
 {
     public $province_id;
     public $rol;
+    public $id_ven;
     /**
      * {@inheritdoc}
      */
@@ -58,6 +59,7 @@ class Person extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id_ven'], 'safe'],
             [['person_type_id', 'name', 'institution_id'], 'required'],
             [['person_type_id', 'categories_id', 'associated_person', 'institution_id', 'city_id'], 'default', 'value' => null],
             [['person_type_id', 'categories_id', 'associated_person', 'institution_id', 'city_id', 'province_id'], 'integer'],
@@ -88,6 +90,7 @@ class Person extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id_ven'=>'id ven',
             'id' => 'ID',
             'person_type_id' => 'Tipo',
             'special_taxpayer' => 'Contribuyente Especial',

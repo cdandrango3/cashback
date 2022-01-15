@@ -86,6 +86,13 @@ class ChartAccounts extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
+    public static function getchar($id){
+       $c= ChartAccounts::find()
+            ->where(['parent_id'=>$id])->all();
+
+
+        return $c;
+    }
     public function getAccountingSeatsDetails()
     {
         return $this->hasMany(AccountingSeatsDetails::className(), ['chart_account_id' => 'id']);

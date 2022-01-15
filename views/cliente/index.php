@@ -96,5 +96,29 @@ $('#personas').change(function(){
             }
         })
     });
+$('#nfac').change(function(){
+        $.ajax({
+              method: "POST",             
+               url: '/cliente/buscarf?fil=$c',
+               data: { tipo:$('#nfac').val() },
+       
+            success: function(data) {
+                $("#ver").html(data)        
+            }
+        })
+    });
+$('#nfac').change(function(){
+        $.ajax({
+              method: "POST",             
+               url: '/cliente/buscarf?fil=$c',
+               data: { tipo:$('#nfac').val() },
+       
+            success: function(data) {
+                $("#ver").html(data)        
+            }
+        })
+    });
 JS;
+
+
 $this->registerJs($js)?>

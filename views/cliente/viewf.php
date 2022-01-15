@@ -7,12 +7,12 @@ use yii\helpers\Url;
 $this->title = 'Consultar Documento Fisico';
 $this->params['breadcrumbs'][] = $this->title;
 $producto=New Product;
-$this->registerCss(".su { margin: 10px; float:right; }");
+$this->registerCss("");
 ?>
 <div class="container">
     <div class="row">
         <div class="col-8">
-            <?= HTML::a("A pdf",Url::to(['cliente/pdf', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
+            <?= HTML::a("A pdf",Url::to(['cliente/pdfview', 'id' => $model->n_documentos]),['class'=>'btn btn-primary m-5 float-right']) ?>
         </div>
         <div class="col-4">
             <?php if($model->tipo_de_documento=="Cliente"){?>
@@ -36,12 +36,15 @@ $this->registerCss(".su { margin: 10px; float:right; }");
                 <?= "Fecha de emisión:".$model->f_timestamp?>
             </div>
             <div class="" style="font-size:12px">
+                <?= "tipo de documento:".$model->tipo_de_documento?>
+            </div>
+            <div class="" style="font-size:12px">
                 <?= "Número de documento:".$model->n_documentos?>
             </div>
             <div class="" style="font-size:12px">
                 <?= "Persona:".$personam->name?>
             </div>
-            <?= "Número de documento:".$model->n_documentos?>
+            <?= "Vendedor:".$salesman->name?>
         </div>
     </div>
 </div>
@@ -49,12 +52,14 @@ $this->registerCss(".su { margin: 10px; float:right; }");
 <div class="container">
     <div class="card">
         <div class="card-body">
-          <table class="table table-light">
-              <thead class="table table-dark">
-              <th>Cantidad</th>
-              <th> Producto </th>
-              <th> Valor unitario </th>
-              <th> Valor final </th>
+          <table class="table table-striped table-bordered">
+              <thead >
+              <tr>
+              <td>Cantidad</td>
+              <td> Producto </td>
+              <td> Valor unitario </td>
+              <td> Valor final </td>
+              </tr>
               </thead>
           <tbody>
           <?php foreach($model2 as $mbody): ?>
@@ -64,8 +69,7 @@ $this->registerCss(".su { margin: 10px; float:right; }");
               <td><?=$pro->name?></td>
               <td><?=$mbody->precio_u?></td>
               <td><?=$mbody->precio_total?></td>
-              <td></td>
-              <td></td>
+
           </tr>
           <?php endforeach ?>
           </tbody>
@@ -76,15 +80,24 @@ $this->registerCss(".su { margin: 10px; float:right; }");
 
 </div>
 <div class="container">
+    <div class="card p-2">
     <div class="row">
         <div class="col-7">
 
         </div>
         <div class="col-5">
-            <div class="card p-2">
-                <strong>Subtotal:   </strong>  <div class="su"><?=$modelfin->subtotal12?></div>
-                <strong>Iva: </strong>  <div class="su"> <?=$modelfin->iva ?></div>
-                <strong>Total: </strong>  <div class="su"><?=$modelfin->iva ?><?=$modelfin->total ?></div>
+
+                <table border="0" cellpadding="5" cellspacing="4" style=" padding:40px;width:100%;font-family: Arial;font-size:9pt">
+                <tr>
+                    <td>
+                <strong>Subtotal:   </strong> </td> <td> <div class="su"><?=$modelfin->subtotal12?></div></td>
+                </tr>
+                <tr>
+                <td><strong>Iva: </strong> </td> <td> <div class="su"> <?=$modelfin->iva ?></td></div>
+            <tr> <td> <strong>Descuento: </strong> </td> <div class="su">  <td><?=$modelfin->descuento ?></td></div></tr>
+            <tr> <td> <strong>Total: </strong> </td> <td><div class="su"><?=$modelfin->total ?></td></div></tr>
+
+                </table>
             </div>
         </div>
     </div>

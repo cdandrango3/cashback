@@ -67,9 +67,10 @@ public function actionIndex($tipos){
     $model2=$modelbody::find()->where(["id_head"=>$id])->all();
     $model3=$modelfin::findOne(["id_head"=>$id]);
     $persona=$persona::findOne(["id"=>$model1->id_personas]);
+        $salesman=$persona::findOne(["id"=>$model1->id_saleman]);
 
 
-        return $this->render("viewf",["model"=>$model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona]);
+        return $this->render("viewf",["salesman"=>$salesman,"model"=>$model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona]);
     }
     public function actionFactura()
     {
@@ -93,10 +94,14 @@ public function actionIndex($tipos){
         $per= Yii::$app->request->post('Person');
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->all();
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->all();
+        $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->all();
         if ($model->load(Yii::$app->request->post())) {
             $model->id_personas=$per["id"];
+            $model->id_saleman=$per["id_ven"];
+            yii::debug($per["id_ven"]);
             if ($model->validate())
                 $model->id_personas=$per["id"];
+
                 $model->save();
                 $c = rand(1, 100090000);
                 $this->id=$c;
@@ -104,6 +109,7 @@ public function actionIndex($tipos){
                 $facturafin->subtotal12 = $d["subtotal12"];
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
+                $facturafin->description = $d["description"];
                 $facturafin->descuento = $d["descuento"];
                 $facturafin->id_head = $model->n_documentos;
                 $facturafin->save();
@@ -350,7 +356,7 @@ public function actionIndex($tipos){
 
 
             return $this->render('factura', [
-                'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
+               'salesman'=>$salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
 
             ]);
         }
@@ -362,7 +368,7 @@ if ($data=="Proveedor"){
     $model2::find()->all();
     $c=$model3::find()->innerJoin('providers',"person.id=providers.person_id")->all();
     foreach($c as $co){
-        echo "<option value='$co->id'>$co->id</option>";
+        echo "<option value='$co->id'>$co->name</option>";
     }
 }
 else{
@@ -370,12 +376,86 @@ else{
         $model2::find()->all();
         $c=$model3::find()->innerJoin('clients',"person.id=clients.person_id")->all();
         foreach($c as $co){
-            echo "<option value='$co->id'>$co->id</option>";
+            echo "<option value='$co->id'>$co->name</option>";
         }
     }
 }
 }
-    public function actionBuscarf($fil){
+    public function actionBuscarn($fil){
+
+
+
+
+        $nombre = $_POST['tipo'];
+        yii::debug($nombre);
+        $model2=HeadFact::find()->filterWhere(["id_person"=>$fil])->andFilterWhere(['like', 'id_person', $nombre. '%' , false])->all();
+        yii::debug($model2);
+
+
+        foreach($model2 as $mod){
+            $total=Facturafin::findOne(['id_head'=>$mod->n_documentos]);
+            echo " <tr>
+    <td>";
+            echo HTML::a('Borrar',Url::to(['cliente/delete', 'id' => $mod->n_documentos]),['class'=>'btn btn-danger']);
+            echo "</td>";
+            echo "<td>";
+            echo Yii::$app->formatter->asDate($mod->f_timestamp, 'php:Y-m-d');
+            echo "</td>";
+            echo "<td>".
+                HTML::a('fac' .  $mod->n_documentos,Url::to(['cliente/viewf', 'id' => $mod->n_documentos]))."</td>
+</td>";
+            echo "<td>".
+                $total->subtotal12.
+                "</td>";
+            echo "<td>".
+                $total->iva.
+                "</td>";
+            echo "<td>".
+                $total->total.
+                "</td>";
+
+            echo "</tr>";
+
+
+        }
+
+
+
+        echo $fil;
+
+
+    }
+    public function action
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ($fil){
 
 
 
@@ -501,7 +581,7 @@ echo "</td>";
         }
 
     }
-    public function actionPdf($id){
+    public function actionPdfview($id){
         $modelhead=New HeadFact;
         $modelbody=New FacturaBody;
         $modelfin=New Facturafin;
@@ -566,10 +646,12 @@ echo "</td>";
         $productos = new Product;
         $facturafin = new Facturafin;
         $accounting_seats=new AccountingSeats;
+
         $accounting_seats_details=New AccountingSeatsDetails;
         $dbody=$model2::find()->where(['id_head'=>$id])->all();
         $dfin=$facturafin::findOne(['id_head'=>$id]);
         $head_fact=$model::findOne(['n_documentos'=>$id]);
+        $providers=$person::find()->innerJoin('providers',"person.id=providers.person_id")->all();
         $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->all();
         $model_tipo=$model_tip::find()->select("name")->all();
         $pro = $productos::find()->select("name")->all();
@@ -893,6 +975,7 @@ echo "</td>";
                                         $asi->updateAttributes(['chart_account_id' => $debe[$co]]);
                                         yii::debug($debe[$co]);
                                     }
+                                    else
                                 if ($co ==$i-1) {
                                     $asi->updateAttributes(['debit' => $d["iva"]]);
                                     yii::debug($suma);
@@ -913,68 +996,79 @@ echo "</td>";
                         if ($i < $cana) {
                             $co = 0;
                             foreach ($asientos as $asi) {
-                                if ($co == 0) {
-                                    $asi->updateAttributes(['debit' => $d["total"]]);
+                                if ($co < $i-1) {
+                                    $asi->updateAttributes(['debit' => $suma[$co]]);
+                                    yii::debug($suma[$co]);
                                     $asi->updateAttributes(['credit' => 0]);
-                                    $asi->updateAttributes(['chart_account_id' => $accou_c]);
-                                } else {
-                                    if ($co < $i) {
-                                        $asi->updateAttributes(['debit' => 0]);
+                                    $asi->updateAttributes(['chart_account_id' => $debe[$co]]);
+                                    yii::debug($debe[$co]);
+                                }
+                                else
+                                    if ($co ==$i-1) {
+                                        $asi->updateAttributes(['debit' => $d["iva"]]);
                                         yii::debug($suma);
-                                        $asi->updateAttributes(['credit' => $suma[$co - 1]]);
-                                        $asi->updateAttributes(['chart_account_id' => $haber[$co - 1]]);
+                                        $asi->updateAttributes(['credit' => 0 ]);
+                                        $asi->updateAttributes(['chart_account_id' => $debe[$co]]);
 
-                                    } else {
-                                        if ($co == $i) {
-                                            $asi->updateAttributes(['debit' => 0]);
-                                            $asi->updateAttributes(['credit' => $d["iva"]]);
-                                            $asi->updateAttributes(['chart_account_id' => $haber[$co - 1]]);
-                                        }
                                     }
+                                    else
+                                        if ($co ==$i) {
+                                            $asi->updateAttributes(['debit' => 0]);
+                                            $asi->updateAttributes(['credit' => $d["total"]]);
+                                            $asi->updateAttributes(['chart_account_id' => $accou_c]);
+                                        }
+
                                     if ($co > $i) {
                                         $asi->delete();
                                     }
+                                $co=$co+1;
                                 }
-                                $co = $co + 1;
-                            }
+
+
                         }
                         if ($i > $cana) {
                             $co = 0;
                             foreach ($asientos as $asi) {
-                                if ($co == 0) {
-                                    $asi->updateAttributes(['debit' => $d["total"]]);
+                                if ($co < $i-1) {
+                                    $asi->updateAttributes(['debit' => $suma[$co]]);
+                                    yii::debug($suma[$co]);
                                     $asi->updateAttributes(['credit' => 0]);
-                                    $asi->updateAttributes(['chart_account_id' => $accou_c]);
-                                } else {
-                                    if ($co < $i) {
-                                        $asi->updateAttributes(['debit' => 0]);
-                                        yii::debug($suma);
-                                        $asi->updateAttributes(['credit' => $suma[$co - 1]]);
-                                        $asi->updateAttributes(['chart_account_id' => $haber[$co - 1]]);
-
-                                    }
+                                    $asi->updateAttributes(['chart_account_id' => $debe[$co]]);
                                 }
+
+
                                 $co = $co + 1;
                             }
                             for ($k = $co; $k <= $i; $k++) {
-                                if ($k < $i) {
+                                if ($k < $i-1) {
                                     $accounting_seats_details = new AccountingSeatsDetails;
                                     $accounting_seats_details->accounting_seat_id = $f;
-                                    $accounting_seats_details->chart_account_id = $haber[$k - 1];
-                                    $accounting_seats_details->debit = 0;
-                                    $accounting_seats_details->credit = $suma[$k];
+                                    $accounting_seats_details->chart_account_id = $debe[$k - 1];
+                                    $accounting_seats_details->debit = $suma[$k];
+                                    $accounting_seats_details->credit = 0;
                                     $accounting_seats_details->cost_center_id = 1;
                                     $accounting_seats_details->status = true;
                                     $accounting_seats_details->save();
-                                } else {
+                                } else
+                                if($k == $i-1)
+                                {
                                     $accounting_seats_details = new AccountingSeatsDetails;
                                     $accounting_seats_details->accounting_seat_id = $f;
-                                    $accounting_seats_details->chart_account_id = $haber[$k - 1];
-                                    $accounting_seats_details->debit = 0;
-                                    $accounting_seats_details->credit = $d["iva"];
+                                    $accounting_seats_details->chart_account_id = $debe[$k - 1];
+                                    $accounting_seats_details->debit =  $d["iva"];
+                                    $accounting_seats_details->credit =0;
                                     $accounting_seats_details->cost_center_id = 1;
                                     $accounting_seats_details->status = true;
                                     $accounting_seats_details->save();
+                                    $accounting_seats_details = new AccountingSeatsDetails;
+                                    $accounting_seats_details->accounting_seat_id = $f;
+                                    $accounting_seats_details->chart_account_id = $accou_c;
+                                    $accounting_seats_details->debit =  0;
+                                    $accounting_seats_details->credit = $d["total"];
+                                    $accounting_seats_details->cost_center_id = 1;
+                                    $accounting_seats_details->status = true;
+                                    $accounting_seats_details->save();
+                                    break;
                                 }
                             }
 
@@ -994,7 +1088,7 @@ echo "</td>";
             }
 
         return $this->render('editar', [
-            'head_fact'=>$head_fact,'model' => $model, "dbo"=>$dbody,"dfin"=>$dfin,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
+            'head_fact'=>$head_fact,'providers'=>$providers,'model' => $model, "dbo"=>$dbody,"dfin"=>$dfin,"ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
 
         ]);
 }

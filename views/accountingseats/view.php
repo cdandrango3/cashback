@@ -58,8 +58,9 @@ use yii\helpers\Url;
 							<tr>
 								<td><?= $detail->chartAccount->code . ' ' . $detail->chartAccount->slug ?></td>
 								<td style="text-align:right;">$<?= sprintf('%.2f', $detail->debit) ?></td>
-								<td style="text-align:left;"><?= $detail->costCenter ? $detail->costCenter->name : '' ?></td>
-								<td></td>
+                                <td></td>
+                                <td style="text-align:left;"><?= $detail->costCenter ? $detail->costCenter->name : '' ?></td>
+
 							</tr>
 						<?php
 						}

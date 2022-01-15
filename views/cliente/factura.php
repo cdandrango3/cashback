@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\HeadFact */
 /* @var $form ActiveForm */
-$listData=ArrayHelper::map($ven,"name","name");
+$listData=ArrayHelper::map($ven,"id","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($precio,"name","precio");
 $listIva=ArrayHelper::map($precio,"name","product_iva_id");
@@ -22,8 +22,9 @@ yii::debug($listIva);
 $listcosto=ArrayHelper::map($precio,"name","costo");
 $phpvar="s";
 print_r($phpvar);
+$sales=ArrayHelper::map($salesman,"id","name");
 $listtypepro=ArrayHelper::map($modeltype,"name","name");
-$listruc=ArrayHelper::map($query,"id","id");
+$listruc=ArrayHelper::map($query,"id","name");
 $prelist=\yii\helpers\Json::encode($listPrecio);
 $prolist=\yii\helpers\Json::encode($listProduct);
 $lcosto=\yii\helpers\Json::encode($listcosto);
@@ -36,7 +37,6 @@ $request=Yii::$app->request->post('FacturaBody');
 
 <div class="cliente-factura">
 
-
     <?php $form = ActiveForm::begin(); ?>
     <div class="container">
         <div class="card ">
@@ -46,6 +46,7 @@ $request=Yii::$app->request->post('FacturaBody');
             <div class="card-body p-4">
     <div class="row">
         <div class="col-6">
+            <?= HTML::tag("label","Fecha de emisión")?>
             <?= DatePicker::widget([
                     'model'=>$model,
             'attribute' => 'f_timestamp',
@@ -59,7 +60,8 @@ $request=Yii::$app->request->post('FacturaBody');
             ])?>;
             <?=$form->field($ven[0],"id")->dropDownList($listruc,['prompt'=>'Select...',"id"=>"dop1"])->label("Persona");?>
 
-            <?=$form->field($ven[0],"name")->dropDownList($listData,['prompt'=>'Select...',"id"=>"vendedor"])->label("vendedor");?>
+            <?=$form->field($salesman[0],"id_ven")->dropDownList($sales,['prompt'=>'Select...',"id"=>"vendedor"])->label("vendedor");?>
+
             <?= $form->field($model, 'Entregado')->checkBox(['label' => 'entregado']);  ?>
 
         </div>
@@ -91,7 +93,7 @@ $request=Yii::$app->request->post('FacturaBody');
     <th>Cantidad</th>
     <th> Producto </th>
     <th> Valor unitario </th>
-    <th> Descuento</th>
+    <th> Descuento %</th>
     <th> Valor final </th>
     <th> Eliminar </th>
     </thead>
@@ -102,7 +104,7 @@ $request=Yii::$app->request->post('FacturaBody');
 </table>
 <div class="row">
     <div class="col-7">
-
+        <td><?= $form->field($model3, 'description')->label("Descripcion")->textarea(['rows' => '6'])?></td>
     </div>
     <div class="col-5">
         <?= $form->field($produ, 'costo')->label("subtotal")->textInput(['value' =>"" ,"id"=>"pre",'type'=>"hidden"]) ?>
@@ -166,14 +168,14 @@ Modal::end();
             .find('#modalContent')
     })
 
-    $('#ndo')
+    $('#ndocu')
         .keypress(function (event) {
             if (event.which < 48 || event.which > 57 || this.value.length === 17) {
                 return false;
             }
         });
     var flag1 = true;
-    $('#nd').keyup(function(e){
+    $('#ndocu').keyup(function(e){
         if($(this).val().length == 3 || $(this).val().length == 7 && flag1) {
             $(this).val($(this).val()+"-");
             flag1 = true;

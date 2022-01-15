@@ -1,94 +1,59 @@
 <?php
 
-use app\models\AccountingSeatsDetails;use app\models\Product;
-use yii\helpers\Html;
-$producto=New Product;
+
+use app\models\AccountingSeatsDetails;
+use app\models\ChartAccounts;
+use app\models\Person;
+
+$person=Person::findOne(["id"=>$model2->person_id]);
+$chart_account=ChartAccounts::findOne(["id"=>$charge->chart_account])
 ?>
-
-<div class="container">
-    <div class="card">
-        <div class="card-head p-2">
-            <div class="container">
-                <h3>Datos de la factura</h3>
-            </div>
-
-        </div>
-        <div class="card-body">
-            <div class="" style="font-size:12px">
-                <?= "Fecha de emisión:".$model->f_timestamp?>
-            </div>
-            <div class="" style="font-size:12px">
-                <?= "Número de documento:".$model->n_documentos?>
-            </div>
-            <div class="" style="font-size:12px">
-                <?= "Persona:".$personam->name?>
-
-    </div>
-</div>
-<br><br><br>
-<div class="container">
-
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                <th>Cantidad</th>
-                <th> Producto </th>
-                <th> Valor unitario </th>
-                <th> Valor final </th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach($model2 as $mbody): ?>
-                    <?php $pro=$producto::findOne($mbody->id_producto)?>
-                    <tr>
-                        <td><?=$mbody->cant?></td>
-                        <td><?=$pro->name?></td>
-                        <td><?=$mbody->precio_u?></td>
-                        <td><?=$mbody->precio_total?></td>
-
-                    </tr>
-                <?php endforeach ?>
-                </tbody>
-
-            </table>
+<div align="center">Comprobante de Ingreso: #<?= $charge->comprobante ?><h1></h1></div>
+<table border="0" cellpadding="0" cellspacing="0" style="width:100%;font-family: Arial;font-size:9pt">
+    <tr>
+        <td style="width:35%"><b>Fecha de emisión:</b></td>
+        <td><?= $modelo->date?></td>
+    <tr>
+        <td style="width:35%"><b>Persona:</b></td>
+        <td><?= $person->name?></td>
+    </tr>
+    <tr>
+        <td style="width:35%"><b>N de Comprobante:</b></td>
+        <td><?= $charge->comprobante?></td>
+    </tr>
+    <tr>
+        <td style="width:35%"><b>Cuenta Contable:</b></td>
+        <td><?= $chart_account->slug?></td>
+    </tr>
+    <tr>
+        <td style="width:35%"><b>El valor de </b></td>
+        <td><?=  sprintf('%.2f', $charge->amount) ?> $</td>
+    </tr>
 
 
-</div>
-<div class="container">
-        <div >
-
-                <div align="center"><strong>Subtotal:</strong> <?=$modelfin->subtotal12?></div></div>
-    <div align="center"> <strong>Iva: </strong> <?=$modelfin->iva ?></div></div>
-        <div align="center"> <strong>Total: </strong> <?=$modelfin->total ?></div></div>
-
-        </div>
-</div>
-<?php $i=0; ?>
-<?php foreach($modelas as $modelo):?>
-<?= (Yii::debug($modelo))?>
-       <?php if($i==0){?>
-        <h5 class="text-center"><b>Asiento Contable</b></h5>
-        <?php }else{?>
-        <h5 class="text-center"><b>Asiento Inventario</b></h5>
-        <?php }?>
-        <table border="0" cellpadding="0" cellspacing="0" style="width:100%;font-family: Arial;font-size:9pt">
-            <tr>
-                <td style="width:35%"><b>Fecha:</b></td>
-                <td><?= $modelo->date?></td>
-            </tr>
-            <tr>
-                <td><b>Código:</b></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><b>Glosa:</b></td>
-                <td><?= $modelo->description?></td>
-            </tr>
-            <tr>
-                <td><b>Gasto No Deducible:</td>
-                <td><?= $modelo->nodeductible?'Si':'No'?></td>
-            </tr>
-        </table>
+</table>
+<br>
+<br>
+<table border="1" cellpadding="0" cellspacing="0" style="width:100%;font-family: Arial;font-size:10pt">
+<thead>
+<tr>
+<td>Documentos</td>
+<td>Concepto</td>
+<td>Valor Doc</td>
+<td>A Cobrar</td>
+<td>Saldo Act</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td><?= $model2->n_document?></td>
+    <td> transfer  </td>
+    <td><?= $charge->balance ?></td>
+    <td><?= $charge->saldo ?></td>
+    <td><?= $charge->amount ?></td>
+</tr>
+</tbody>
+</table>
         <br>
         <b><u><i> Detalle del Asiento</i><u></b>
         <table border="1" cellpadding="0" cellspacing="0" style="width:100%;font-family: Arial;font-size:10pt">
@@ -167,5 +132,3 @@ $producto=New Product;
                 </td>
             </tr>
         </table>
-<?php $i=$i+1; ?>
-<?php endforeach?>
